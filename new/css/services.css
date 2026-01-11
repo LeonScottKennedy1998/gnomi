@@ -1,0 +1,308 @@
+/* Блок "Что мы делаем" */
+.services-section {
+    background: #303030;
+    padding: 100px 0;
+    min-height: 831px;
+    width: 100%;
+}
+
+/* Заголовок блока */
+.services-title {
+    color: #FFF;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 1.8px;
+    margin: 0 0 70px 0;
+    text-align: left;
+  padding-left: 20%;
+}
+
+.services-content {
+    display: flex;
+    justify-content: center; /* Меняем space-between на center */
+    gap: 150px;
+    align-items: flex-start;
+    max-width: 1200px; /* Ограничиваем максимальную ширину */
+    margin: 0 auto; /* Центрируем */
+    padding: 0 20px; /* Добавляем отступы по краям */
+}
+/* Левая часть: картинка и описание */
+.services-left {
+    flex: 0 0 526px;
+}
+
+/* Картинка услуги */
+.service-image {
+    width: 526px;
+    height: 358px;
+    border-radius: 10px;
+    background: #303030;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.services-section.service-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #404040; /* Темно-серый вместо белого */
+    border-radius: 10px;
+    z-index: 1;
+}
+
+/* Когда картинка загружена, скрываем фон */
+.service-image img.loaded {
+    opacity: 1;
+}
+
+/* Прелоадер для картинки */
+.image-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #FFF;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.service-image.loading .image-loader {
+    opacity: 1;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.service-description {
+    color: #FFF;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    width: 526px;
+    margin: 0;
+    padding: 0;
+    min-height: 54px;
+    transition: opacity 0.3s ease;
+}
+.service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.5s ease;
+}
+
+.service-image:hover img {
+    transform: scale(1.05);
+}
+
+/* Описание под картинкой */
+.service-description {
+    color: #FFF;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    width: 526px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Правая часть: список услуг */
+.services-right {
+    flex: 1;
+}
+
+/* Список услуг */
+.services-right {
+    flex: 0 0 auto; /* Убираем flex: 1 чтобы не растягивалось */
+    max-width: 600px; /* Ограничиваем ширину */
+}
+
+/* Один пункт услуги */
+.service-item {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 50px; /* Высота стрелки */
+    display: flex;
+    align-items: center;
+}
+
+.service-item:hover {
+    opacity: 0.8;
+}
+
+/* Контент пункта - ИСПРАВЛЕНО */
+.service-item-content {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+/* Стрелка для активного пункта - ПОЗИЦИОНИРОВАНИЕ ИСПРАВЛЕНО */
+.service-arrow {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    position: absolute;
+    left: -40px; /* Стрелка слева от текста (50px + 15px отступа) */
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Активный пункт - стрелка видима */
+.service-item.active .service-arrow {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* Текст услуги - ВСЕГДА НА ОДНОМ МЕСТЕ */
+.service-text {
+    color: #FFF;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: normal;
+    transition: all 0.3s ease;
+    padding-left: 15px; /* Отступ для стрелки, даже когда её нет */
+    display: block;
+    width: 100%;
+}
+
+/* Активный текст может выделяться жирностью */
+.service-item.active .service-text {
+    font-weight: 500;
+    /* Не меняем padding, чтобы текст не смещался */
+}
+
+/* АДАПТИВНОСТЬ */
+/* Планшеты */
+@media (max-width: 1024px) {
+    .services-section {
+        padding: 80px 0;
+        min-height: auto;
+    }
+    
+    .services-title {
+        font-size: 28px;
+        padding-left: 5%;
+        margin-bottom: 50px;
+    }
+    
+    .services-content {
+        flex-direction: column;
+        gap: 50px;
+        align-items: center;
+    }
+    
+    .services-left {
+        flex: 1;
+        width: 100%;
+        max-width: 600px;
+    }
+    
+    .service-image {
+        width: 100%;
+        max-width: 526px;
+        height: auto;
+        aspect-ratio: 526 / 358;
+    }
+    
+    .service-description {
+        width: 100%;
+        max-width: 526px;
+    }
+    
+    .services-right {
+        width: 100%;
+        max-width: 600px;
+    }
+    
+    .service-arrow {
+        left: -35px;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+    .services-section {
+        padding: 60px 0;
+    }
+    
+    .services-title {
+        font-size: 24px;
+        padding-left: 20px;
+        margin-bottom: 40px;
+    }
+    
+    .services-content {
+        gap: 40px;
+        padding: 0 15px;
+    }
+    
+    .service-image {
+        max-width: 100%;
+    }
+    
+    .service-description {
+        max-width: 100%;
+        font-size: 11px;
+    }
+    
+    .service-text {
+        font-size: 16px;
+        padding-left: 10px;
+    }
+    
+    .service-arrow {
+        width: 40px;
+        height: 40px;
+        left: -30px;
+    }
+    
+    .service-item {
+        min-height: 40px;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    .services-title {
+        font-size: 20px;
+        padding-left: 15px;
+    }
+    
+    .service-text {
+        font-size: 14px;
+    }
+    
+    .service-arrow {
+        width: 30px;
+        height: 30px;
+        left: -25px;
+    }
+    
+    .service-item {
+        min-height: 35px;
+    }
+}
+

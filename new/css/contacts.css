@@ -1,0 +1,257 @@
+/* Блок контактов */
+.contacts-section {
+    background: #D9D9D9;
+    padding: 150px 0 78px 0;
+    min-height: 686px;
+    width: 100%;
+}
+
+
+.contacts-title {
+    color: #2B2B2B;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 1.8px;
+    margin: 0 0 100px 0;
+    text-align: left;
+  padding-left: 20%;
+}
+
+/* Основной контент - две колонки */
+.contacts-content {
+    display: flex;
+    justify-content: space-around;
+    gap: 80px;
+    align-items: flex-start;
+}
+
+/* Левая часть: логотип и контакты */
+.contacts-left {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+/* Логотип */
+.contacts-logo {
+    width: 200px;
+    height: 240px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contacts-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Контакты (телефон, почта, адрес) */
+.contacts-info {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+/* Один контактный пункт */
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none; /* Убираем подчёркивание */
+    color: inherit; /* Наследуем цвет текста */
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+
+
+/* Иконка контакта */
+.contact-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+/* Текст контакта */
+.contact-text {
+    color: #2B2B2B;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: normal;
+    margin: 0;
+}
+
+/* Правая часть: О компании */
+.contacts-right {
+    flex: 0 0 526px;
+    padding-top: 20px;
+}
+
+/* Заголовок "О компании" */
+.about-title {
+    color: #2B2B2B;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 120%; /* 28.8px */
+    margin: 0 0 30px 0;
+}
+
+/* Описание компании */
+.about-description {
+    color: #2B2B2B;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    width: 526px;
+    height: 159px;
+    margin: 0;
+}
+
+/* АДАПТИВНОСТЬ */
+/* Планшеты */
+@media (max-width: 1024px) {
+    .contacts-section {
+        padding: 100px 0 60px 0;
+        min-height: auto;
+    }
+    
+    .contacts-title {
+        font-size: 28px;
+        padding-left: 5%;
+        margin-bottom: 60px;
+    }
+    
+    .contacts-content {
+        flex-direction: column;
+        gap: 50px;
+        align-items: center;
+    }
+    
+    .contacts-left {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .contacts-logo {
+        width: 150px;
+        height: 180px;
+    }
+    
+    .contacts-info {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .contacts-right {
+        flex: 1;
+        width: 100%;
+        max-width: 600px;
+        padding-top: 0;
+    }
+    
+    .about-description {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+    .contacts-section {
+        padding: 60px 0 40px 0;
+    }
+    
+    .contacts-title {
+        font-size: 24px;
+        padding-left: 20px;
+        margin-bottom: 40px;
+    }
+    
+    .contacts-content {
+        gap: 40px;
+        padding: 0 15px;
+    }
+    
+    .contacts-left {
+        width: 100%;
+    }
+    
+    .contacts-logo {
+        width: 120px;
+        height: 144px;
+    }
+    
+    .contacts-info {
+        width: 100%;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .contact-item {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .contact-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .contact-text {
+        font-size: 14px;
+    }
+    
+    .about-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .about-description {
+        font-size: 11px;
+    }
+    
+    .contacts-right {
+        max-width: 100%;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    .contacts-title {
+        font-size: 20px;
+    }
+    
+    .contacts-logo {
+        width: 100px;
+        height: 120px;
+    }
+    
+    .contact-icon {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .contact-text {
+        font-size: 12px;
+    }
+    
+    .about-title {
+        font-size: 18px;
+    }
+    
+    .about-description {
+        font-size: 10px;
+    }
+}
+

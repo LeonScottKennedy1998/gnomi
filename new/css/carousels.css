@@ -1,0 +1,173 @@
+.carousels-section {
+    background: #222;
+    padding: 100px 0;
+    min-height: 2060px;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+/* Блок одной карусели (заголовок + карусель) */
+.carousel-block {
+    position: relative;
+    /* Убираем margin-bottom, используем padding */
+}
+
+.carousel-block:last-child {
+    margin-bottom: 0;
+}
+
+.carousel-title {
+    color: #E2E2E2;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 120%;
+    margin: 60px 0 50px 0;
+    text-align: left;
+  padding-left: 20%;
+}
+
+/* Контейнер для карусели - ФИКС ОБРЕЗАНИЯ */
+.carousel-container {
+    width: 1956px;
+    height: 306px;
+    position: relative;
+    overflow: visible; /* Меняем hidden на visible */
+    margin: 0 auto;
+    
+    /* ДОБАВЛЯЕМ ПАДДИНГ для места при увеличении */
+    padding: 40px 0; /* 40px сверху и снизу */
+    height: calc(306px + 80px); /* Высота картинки + паддинги */
+    
+    /* ИЛИ используем margin вместо padding для заголовка */
+    margin-top: 40px; /* Это вместо margin-bottom у заголовка */
+}
+
+/* Дорожка карусели (бесконечная) */
+.carousel-track {
+    display: flex;
+    gap: 24px; /* Равное расстояние между картинками */
+    height: 306px; /* Фиксированная высота дорожки */
+    position: absolute;
+    left: 0;
+    will-change: transform;
+    top: 40px; /* Компенсируем padding контейнера */
+}
+
+/* Одна картинка в карусели - ИСПРАВЛЕНО СКРУГЛЕНИЕ */
+.carousel-image {
+    width: 306px;
+    height: 306px;
+    border-radius: 10px;
+    background: #D9D9D9;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Гарантируем, что увеличение будет относительно центра */
+    transform-origin: center center;
+}
+
+.carousel-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+}
+
+/* Эффект при наведении - увеличение БЕЗ ОБРЕЗАНИЯ */
+.carousel-image:hover {
+    transform: scale(1.08);
+    border-radius: 10px;
+    z-index: 100; /* Поднимаем над другими картинками */
+}
+
+.carousel-image:hover img {
+    transform: scale(1.1);
+    border-radius: 10px;
+}
+
+/* АДАПТИВНОСТЬ */
+/* Планшеты */
+@media (max-width: 1024px) {
+    .carousels-section {
+        padding: 80px 0;
+        min-height: auto;
+    }
+    
+    .carousel-title {
+        font-size: 20px;
+        padding-left: 5%;
+        margin: 40px 0 30px 0;
+    }
+    
+    .carousel-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 30px 20px;
+        height: auto;
+        min-height: calc(250px + 60px);
+    }
+    
+    .carousel-track {
+        height: 250px;
+        top: 30px;
+    }
+    
+    .carousel-image {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+    .carousels-section {
+        padding: 60px 0;
+    }
+    
+    .carousel-title {
+        font-size: 18px;
+        padding-left: 20px;
+        margin: 30px 0 20px 0;
+    }
+    
+    .carousel-container {
+        width: 100%;
+        padding: 20px 15px;
+        min-height: calc(200px + 40px);
+    }
+    
+    .carousel-track {
+        height: 200px;
+        top: 20px;
+        gap: 15px;
+    }
+    
+    .carousel-image {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    .carousel-title {
+        font-size: 16px;
+    }
+    
+    .carousel-track {
+        height: 150px;
+        gap: 10px;
+    }
+    
+    .carousel-image {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+

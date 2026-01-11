@@ -1,0 +1,358 @@
+/* Блок "Наши проекты" */
+.projects-section {
+    background-color: #252525;
+    padding: 100px 0;
+    min-height: 100vh;
+}
+
+
+/* Заголовок блока */
+.projects-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Стрелки ниже заголовка */
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.projects-title {
+    color: #E2E2E2;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 1.8px;
+    margin: 0;
+    text-align: left;
+  padding-left: 20%;
+    
+}
+
+/* Стрелки навигации - РАБОЧИЙ ВАРИАНТ */
+.projects-nav {
+    display: flex;
+    gap: 20px;
+    position: relative;
+    padding-right: 300px;
+}
+
+.projects-nav-wrapper {
+    display: flex;
+    justify-content: flex-end; /* ← ПРИЖИМАЕМ ВПРАВО */
+    margin-bottom: 30px;
+}
+
+
+.project-nav-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.project-nav-btn:hover:not(:disabled) {
+    opacity: 0.7;
+}
+
+.project-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.project-nav-btn svg {
+    width: 50px;
+    height: 50px;
+}
+
+/* Контейнер для карточек - ФИКСИРОВАННАЯ ШИРИНА */
+.projects-container {
+    width: 1296px;
+    margin: 0 auto 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Дорожка со ВСЕМИ 6 карточками */
+.projects-track {
+    display: flex;
+    gap: 24px; /* 24px между карточками */
+    transition: transform 0.5s ease;
+    width: max-content; /* Ширина по содержимому */
+}
+
+/* ОДНА карточка - ТОЧНЫЕ РАЗМЕРЫ */
+.project-card {
+    width: 306px; /* ТОЧНО 306px */
+    height: auto;
+    background: transparent;
+    border-radius: 10px;
+    overflow: visible; /* ВАЖНО: не hidden */
+    transition: transform 0.3s ease;
+    flex-shrink: 0; /* Не сжимается */
+}
+
+/* Картинка карточки */
+.project-card-image {
+    width: 306px; /* ТОЧНО 306px */
+    height: 306px; /* ТОЧНО 306px */
+    border-radius: 10px;
+    background: #D9D9D9;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.project-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-card-image img {
+    transform: scale(1.05);
+}
+
+/* Контент карточки (название + стрелка) */
+.project-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 5px;
+    min-height: 50px;
+    width: 100%;
+}
+
+.project-card-title {
+    color: #E2E2E2;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 120%; /* 28.8px */
+    margin: 0;
+    max-width: calc(100% - 60px);
+}
+
+/* Кнопка-стрелка для раскрытия описания - ФИКС */
+.project-toggle-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.project-toggle-btn:hover {
+    transform: scale(1.1);
+}
+
+.project-toggle-btn svg {
+    width: 50px;
+    height: 50px;
+    display: block;
+}
+
+.project-card-description {
+    color: #E2E2E2;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 12px !important;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 15px 5px 0;
+    margin-top: 15px;
+    border-top: 1px solid rgba(226, 226, 226, 0.2);
+    
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.project-card-description.show {
+    max-height: 150px;
+    opacity: 1;
+    padding: 15px 5px;
+}
+.project-card-description p {
+    font-size: 12px !important; /* Переопределяем общий стиль для p */
+    margin: 0;
+    padding: 0;
+    color: #E2E2E2;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* 2 большие карточки внизу */
+.featured-projects {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    position: relative;
+    height: 341px;
+}
+
+.featured-card {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease;
+}
+
+.featured-card.active {
+    opacity: 1;
+    visibility: visible;
+    position: relative;
+}
+
+.featured-card img {
+    width: 623px;
+    height: 341px;
+    border-radius: 10px;
+    background: #D9D9D9;
+    object-fit: cover;
+}
+
+/* Утилиты */
+.hidden {
+    display: none !important;
+}
+
+/* АДАПТИВНОСТЬ */
+/* Планшеты */
+@media (max-width: 1024px) {
+    .projects-section {
+        padding: 80px 0;
+    }
+    
+    .projects-title {
+        font-size: 28px;
+        padding-left: 5%;
+    }
+    
+    .projects-nav {
+        padding-right: 5%;
+    }
+    
+    .projects-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 20px;
+    }
+    
+    .project-card {
+        width: 280px;
+    }
+    
+    .project-card-image {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .featured-card img {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+    }
+    
+    .featured-projects {
+        flex-direction: column;
+        height: auto;
+        gap: 20px;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+    .projects-section {
+        padding: 60px 0;
+    }
+    
+    .projects-title {
+        font-size: 24px;
+        padding-left: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .projects-nav-wrapper {
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    
+    .projects-nav {
+        padding-right: 0;
+    }
+    
+    .projects-container {
+        width: 100%;
+        padding: 0 15px;
+    }
+    
+    .project-card {
+        width: 250px;
+    }
+    
+    .project-card-image {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .project-card-title {
+        font-size: 20px;
+    }
+    
+    .featured-card {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .featured-card img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    .project-card {
+        width: 200px;
+    }
+    
+    .project-card-image {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .project-card-title {
+        font-size: 18px;
+    }
+    
+    .project-nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .project-nav-btn svg {
+        width: 40px;
+        height: 40px;
+    }
+}
+
