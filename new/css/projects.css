@@ -270,9 +270,11 @@
     /* Стрелки листания - ПО ЦЕНТРУ */
     .projects-nav-wrapper {
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         margin-bottom: 20px;
         width: 100%;
+        padding-right: 40px;
+        
     }
     
     .projects-nav {

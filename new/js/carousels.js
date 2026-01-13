@@ -9,7 +9,11 @@ const carouselImages = {
         'assets/images/carousels/landscape-projects/5.png',
         'assets/images/carousels/landscape-projects/6.png',
         'assets/images/carousels/landscape-projects/7.png',
-        'assets/images/carousels/landscape-projects/8.png'
+        'assets/images/carousels/landscape-projects/8.png',
+        'assets/images/carousels/landscape-projects/9.png',
+        'assets/images/carousels/landscape-projects/10.png',
+        'assets/images/carousels/landscape-projects/11.png',
+        'assets/images/carousels/landscape-projects/12.png'
     ],
     2: [ // Реализация ландшафтных проектов
         'assets/images/carousels/landscape-implementation/1.jpg',
