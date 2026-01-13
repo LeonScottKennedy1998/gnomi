@@ -235,124 +235,276 @@
     display: none !important;
 }
 
-/* АДАПТИВНОСТЬ */
-/* Планшеты */
-@media (max-width: 1024px) {
+/* Мобильная адаптация - ИСПРАВЛЕННАЯ ВЕРСИЯ С ПРАВИЛЬНЫМИ ОТСТУПАМИ */
+@media (max-width: 767px) {
+    /* Блок проектов */
     .projects-section {
-        padding: 80px 0;
+        padding: 40px 0;
+        min-height: auto;
     }
-    
-    .projects-title {
-        font-size: 28px;
-        padding-left: 5%;
-    }
-    
-    .projects-nav {
-        padding-right: 5%;
-    }
-    
-    .projects-container {
-        width: 100%;
-        max-width: 100%;
-        padding: 0 20px;
-    }
-    
-    .project-card {
-        width: 280px;
-    }
-    
-    .project-card-image {
-        width: 280px;
-        height: 280px;
-    }
-    
-    .featured-card img {
-        width: 100%;
-        max-width: 500px;
-        height: auto;
-    }
-    
-    .featured-projects {
-        flex-direction: column;
-        height: auto;
-        gap: 20px;
-    }
-}
 
-/* Мобильные устройства */
-@media (max-width: 768px) {
-    .projects-section {
-        padding: 60px 0;
+    
+    /* Заголовок */
+    .projects-header {
+        display: block;
+        margin-bottom: 25px;
     }
     
     .projects-title {
-        font-size: 24px;
-        padding-left: 20px;
-        margin-bottom: 30px;
+        font-size: 32px;
+        font-family: Unbounded;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: 1.6px;
+        text-align: left;
+        padding-left: 0;
+        margin-bottom: 25px;
+        width: 100%;
+        white-space: nowrap;
     }
     
+    /* Стрелки листания - ПО ЦЕНТРУ */
     .projects-nav-wrapper {
-        justify-content: center;
+        display: flex;
+        justify-content: right;
         margin-bottom: 20px;
     }
     
     .projects-nav {
         padding-right: 0;
+        gap: 40px;
     }
     
+    .project-nav-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .project-nav-btn svg {
+        width: 36px;
+        height: 36px;
+    }
+    
+    /* КОНТЕЙНЕР - ФИКСИРОВАННАЯ ШИРИНА БЕЗ ПАДДИНГОВ */
     .projects-container {
         width: 100%;
-        padding: 0 15px;
+        margin: 0 auto 30px;
+        overflow: hidden;
+        padding: 0; /* Убираем внутренние отступы */
     }
     
+    /* ДОРОЖКА */
+    .projects-track {
+        display: flex;
+        gap: 0;
+        transition: transform 0.3s ease;
+        width: max-content;
+    }
+    
+    /* КАРТОЧКА - ШИРИНА РОВНО КАК У КОНТЕЙНЕРА МИНУС ЕГО ПАДДИНГИ */
     .project-card {
-        width: 250px;
+        width: calc(100vw - 40px) !important; /* 100vw минус отступы контейнера (20px * 2) */
+        min-width: calc(100vw - 40px);
+        max-width: calc(100vw - 40px);
+        flex-shrink: 0;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    /* КАРТИНКА КАРТОЧКИ */
+    .project-card-image {
+        width: 100% !important;
+        height: calc(100vw - 40px) !important; /* Квадратная, та же формула */
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .project-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    /* КОНТЕНТ КАРТОЧКИ */
+    .project-card-content {
+        padding: 0;
+        min-height: 44px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .project-card-title {
+        font-size: 18px;
+        max-width: calc(100% - 50px);
+        padding-right: 5px;
+        box-sizing: border-box;
+    }
+    
+    /* СТРЕЛКА РАСКРЫТИЯ ОПИСАНИЯ */
+    .project-toggle-btn {
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .project-toggle-btn svg {
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+    }
+    
+    /* ОПИСАНИЕ */
+    .project-card-description {
+        padding: 12px 0 0;
+        font-size: 14px !important;
+        line-height: 1.5;
+        margin-top: 10px;
+    }
+    
+    .project-card-description.show {
+        max-height: 250px;
+        padding: 15px 0;
+    }
+    
+    /* БОЛЬШИЕ КАРТИНКИ ВНИЗУ */
+    .featured-projects {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 0;
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    .featured-card {
+        display: none;
+        flex-direction: column;
+        gap: 20px;
+        position: relative;
+        width: 100%;
+        padding: 0;
+    }
+    
+    .featured-card.active {
+        display: flex;
+    }
+    
+    .featured-card img {
+        width: 100%;
+        height: 180px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin: 0;
+    }
+}
+
+/* Для очень узких экранов (меньше 361px) */
+@media (max-width: 360px) {
+    
+    .project-card {
+        width: calc(100vw - 30px) !important; /* 15px * 2 = 30px */
+        min-width: calc(100vw - 30px);
+        max-width: calc(100vw - 30px);
     }
     
     .project-card-image {
-        width: 250px;
-        height: 250px;
+        height: calc(100vw - 30px) !important;
+    }
+    
+    .project-card-title {
+        font-size: 16px;
+    }
+    
+    .project-toggle-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .project-toggle-btn svg {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Для экранов от 361px до 390px */
+@media (min-width: 361px) and (max-width: 390px) {
+
+    .project-card-title {
+        font-size: 17px;
+    }
+    
+    .featured-card img {
+        height: 190px;
+    }
+}
+
+/* Для экранов от 391px до 430px */
+@media (min-width: 391px) and (max-width: 430px) {
+
+    
+    .project-card {
+        width: calc(100vw - 40px) !important;
+        min-width: calc(100vw - 40px);
+        max-width: calc(100vw - 40px);
+    }
+    
+    .project-card-image {
+        height: calc(100vw - 40px) !important;
+    }
+    
+    .featured-card img {
+        height: 200px;
+    }
+}
+
+/* Для экранов 431px - 767px */
+@media (min-width: 431px) and (max-width: 767px) {
+    
+    .project-card {
+        width: calc(100vw - 50px) !important; /* 25px * 2 = 50px */
+        min-width: calc(100vw - 50px);
+        max-width: calc(100vw - 50px);
+    }
+    
+    .project-card-image {
+        height: calc(100vw - 50px) !important;
     }
     
     .project-card-title {
         font-size: 20px;
     }
     
-    .featured-card {
-        flex-direction: column;
-        gap: 15px;
+    .featured-card img {
+        height: 220px;
+    }
+}
+
+/* Для планшетов (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .projects-container {
+        width: 100%;
+        max-width: 708px;
+        margin: 0 auto 50px;
+    }
+    
+    .project-card {
+        width: 335px !important;
     }
     
     .featured-card img {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
+        width: 48%;
+        height: 250px;
     }
 }
-
-/* Очень маленькие экраны */
-@media (max-width: 480px) {
-    .project-card {
-        width: 200px;
-    }
-    
-    .project-card-image {
-        width: 200px;
-        height: 200px;
-    }
-    
-    .project-card-title {
-        font-size: 18px;
-    }
-    
-    .project-nav-btn {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .project-nav-btn svg {
-        width: 40px;
-        height: 40px;
-    }
-}
-

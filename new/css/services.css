@@ -194,115 +194,288 @@
     /* Не меняем padding, чтобы текст не смещался */
 }
 
-/* АДАПТИВНОСТЬ */
-/* Планшеты */
-@media (max-width: 1024px) {
-    .services-section {
-        padding: 80px 0;
-        min-height: auto;
-    }
-    
-    .services-title {
-        font-size: 28px;
-        padding-left: 5%;
-        margin-bottom: 50px;
-    }
-    
-    .services-content {
-        flex-direction: column;
-        gap: 50px;
-        align-items: center;
-    }
-    
-    .services-left {
-        flex: 1;
-        width: 100%;
-        max-width: 600px;
-    }
-    
-    .service-image {
-        width: 100%;
-        max-width: 526px;
-        height: auto;
-        aspect-ratio: 526 / 358;
-    }
-    
-    .service-description {
-        width: 100%;
-        max-width: 526px;
-    }
-    
-    .services-right {
-        width: 100%;
-        max-width: 600px;
-    }
-    
-    .service-arrow {
-        left: -35px;
-    }
-}
 
-/* Мобильные устройства */
-@media (max-width: 768px) {
+/* Мобильная адаптация для блока "Что мы делаем" - ОПТИМИЗИРОВАННАЯ ДЛЯ ВСЕХ УСТРОЙСТВ */
+@media (max-width: 767px) {
+    /* Блок "Что мы делаем" */
     .services-section {
         padding: 60px 0;
+        min-height: auto;
+        background: #303030;
     }
     
+    
+    /* Заголовок блока - МОБИЛЬНАЯ ВЕРСИЯ */
     .services-title {
-        font-size: 24px;
-        padding-left: 20px;
-        margin-bottom: 40px;
+        color: #FFF;
+        font-family: 'Unbounded', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: 1.6px;
+        margin: 0 0 40px 0;
+        text-align: center;
+        padding-left: 0;
+        white-space: nowrap; /* Без переноса слов */
     }
     
+    /* Основной контент - МЕНЯЕМ ПОРЯДОК НА МОБИЛКЕ */
     .services-content {
+        display: flex;
+        flex-direction: column; /* Вертикально: сначала список, потом картинка */
         gap: 40px;
-        padding: 0 15px;
+        align-items: flex-start;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+    }
+    
+    /* Левая часть (картинка и описание) - теперь внизу */
+    .services-left {
+        flex: 0 0 auto;
+        width: 100%;
+        order: 2; /* Перемещаем вниз */
+    }
+    
+    /* Картинка услуги - МОБИЛЬНАЯ ВЕРСИЯ */
+    .service-image {
+        width: 100%;
+        height: 200px; /* Меньшая высота для мобилок */
+        border-radius: 10px;
+        background: #404040;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+    
+    .service-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    
+    /* Описание под картинкой - МОБИЛЬНАЯ ВЕРСИЯ */
+    .service-description {
+        color: #FFF;
+        font-family: 'Unbounded', sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: normal;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        text-align: left;
+        word-wrap: break-word;
+    }
+    
+    /* Правая часть (список услуг) - теперь сверху */
+    .services-right {
+        flex: 0 0 auto;
+        width: 100%;
+        order: 1; /* Перемещаем вверх */
+        position: relative;
+    }
+    
+    /* Список услуг - МОБИЛЬНАЯ ВЕРСИЯ */
+    .services-list {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Один пункт услуги - МОБИЛЬНАЯ ВЕРСИЯ */
+    .service-item {
+        position: relative;
+        cursor: pointer;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding-left: 50px; /* Увеличиваем отступ для стрелочки */
+    }
+    
+    .service-item:hover {
+        opacity: 0.8;
+    }
+    
+    /* Контент пункта */
+    .service-item-content {
+        display: flex;
+        align-items: center;
+        position: relative;
+        width: 100%;
+        padding-right: 12px; /* Отступ от правого края 12px */
+    }
+    
+    /* Стрелка для активного пункта - ПРАВЕЕ ДЛЯ iPhone */
+    .service-arrow {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        position: absolute;
+        left: -20px; /* Стрелка правее (было -32px) */
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    /* Активный пункт - стрелка видима */
+    .service-item.active .service-arrow {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* Текст услуги - МОБИЛЬНАЯ ВЕРСИЯ, ПРИЖАТ К ПРАВОМУ КРАЮ */
+    .service-text {
+        color: #FFF;
+        font-family: 'Unbounded', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: normal;
+        width: 256px;
+        max-width: 256px;
+        padding-left: 24px; /* Расстояние от правого края стрелочки 24px */
+        display: block;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        margin-left: auto; /* Прижимаем текст к правому краю */
+        margin-right: 0;
+    }
+    
+    /* Активный текст - без изменения стиля (остается белым) */
+    .service-item.active .service-text {
+        font-weight: 500;
+        /* Не меняем цвет, остается белым */
+    }
+    
+    /* Убираем эффекты фокуса/наведения которые могут менять цвет */
+    .service-item:focus,
+    .service-item:focus .service-text,
+    .service-item:active,
+    .service-item:active .service-text {
+        outline: none;
+        color: #FFF !important;
+    }
+    
+    /* Стрелка всегда белая */
+    .service-arrow path {
+        fill: #E2E2E2;
+    }
+    
+    /* Убираем outline у кнопок/ссылок */
+    button:focus,
+    button:active,
+    .service-item:focus {
+        outline: none;
+    }
+}
+
+/* Для Galaxy S8+ и узких экранов (меньше 361px) */
+@media (max-width: 360px) {
+    .services-title {
+        font-size: 28px;
+        letter-spacing: 1.4px;
+    }
+    
+    .service-item {
+        padding-left: 40px; /* Меньший отступ для узких экранов */
+    }
+    
+    .service-text {
+        width: 220px;
+        max-width: 220px;
+        font-size: 13px;
+        padding-left: 20px; /* Уменьшаем отступ от стрелочки */
+    }
+    
+    .service-arrow {
+        left: -30px; /* Для узких экранов - стрелка левее */
+        width: 45px;
+        height: 45px;
+    }
+    
+    .service-item-content {
+        padding-right: 10px; /* Уменьшаем отступ от правого края */
+    }
+}
+
+/* Для iPhone 12/13/14 (390-430px) */
+@media (min-width: 390px) and (max-width: 430px) {
+    .service-item {
+        padding-left: 40px; /* Больший отступ для iPhone */
+    }
+    
+    .service-arrow {
+        left: -10px; /* Стрелка еще правее для iPhone */
+    }
+    
+    .service-text {
+        width: 240px;
+        max-width: 240px;
+    }
+}
+
+/* Для iPhone Pro Max и крупных устройств (431px - 480px) */
+@media (min-width: 431px) and (max-width: 480px) {
+    .service-item {
+        padding-left: 70px; /* Еще больше для крупных iPhone */
+    }
+    
+    .service-arrow {
+        left: 0px; /* Стрелка совсем правее */
+    }
+    
+    .service-text {
+        width: 250px;
+        max-width: 250px;
+    }
+}
+
+/* Для планшетов в вертикальной ориентации (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+    .services-title {
+        font-size: 34px;
+        letter-spacing: 1.7px;
+    }
+    
+    .service-item {
+        padding-left: 80px;
+    }
+    
+    .service-arrow {
+        left: 10px;
+    }
+    
+    .service-text {
+        width: 280px;
+        max-width: 280px;
+        font-size: 15px;
     }
     
     .service-image {
-        max-width: 100%;
+        height: 240px;
     }
     
     .service-description {
-        max-width: 100%;
-        font-size: 11px;
-    }
-    
-    .service-text {
-        font-size: 16px;
-        padding-left: 10px;
-    }
-    
-    .service-arrow {
-        width: 40px;
-        height: 40px;
-        left: -30px;
-    }
-    
-    .service-item {
-        min-height: 40px;
+        font-size: 13px;
     }
 }
 
-/* Очень маленькие экраны */
-@media (max-width: 480px) {
-    .services-title {
-        font-size: 20px;
-        padding-left: 15px;
-    }
-    
-    .service-text {
-        font-size: 14px;
+/* Дополнительные настройки для очень широких мобилок */
+@media (min-width: 361px) and (max-width: 389px) {
+    /* Средние устройства между Galaxy S8+ и iPhone 12 */
+    .service-item {
+        padding-left: 55px;
     }
     
     .service-arrow {
-        width: 30px;
-        height: 30px;
-        left: -25px;
+        left: -15px;
     }
     
-    .service-item {
-        min-height: 35px;
+    .service-text {
+        width: 230px;
+        max-width: 230px;
     }
 }
-

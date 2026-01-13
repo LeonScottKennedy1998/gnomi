@@ -33,34 +33,5 @@ h2 { font-size: var(--h2-size); font-weight: 700; }
 p { font-size: var(--p-size); }
 
 /* АДАПТИВНОСТЬ */
-/* Планшеты */
-@media (max-width: 1024px) {
-    :root {
-        --h1-size: 32px;
-        --h2-size: 28px;
-        --p-size: 18px;
-    }
-    
-    .container {
-        padding: 0 30px;
-    }
-}
-
-/* Мобильные устройства */
-@media (max-width: 768px) {
-    :root {
-        --h1-size: 24px;
-        --h2-size: 22px;
-        --p-size: 16px;
-    }
-    
-    .container {
-        padding: 0 20px;
-    }
-    
-    html {
-        font-size: 14px;
-    }
-}
 
 

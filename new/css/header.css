@@ -89,52 +89,70 @@
     background-color: rgba(227, 227, 227, 0.1);
 }
 
-/* АДАПТИВНОСТЬ */
-/* Планшеты */
-@media (max-width: 1024px) {
-    .nav {
-        gap: 30px;
-        padding-right: 5%;
+@media (max-width: 480px) {
+
+    .header {
+        position: absolute;
+        background: transparent;
     }
-    
+
+    .header::after {
+        display: none;
+    }
+
+    .nav {
+        height: auto;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 14px;
+        padding: 20px;
+        padding-top: 24px;
+    }
+
     .nav-link {
         font-size: 14px;
+        padding: 4px 0;
     }
-    
-    .header::after {
-        left: 50%;
-        width: 90%;
-    }
-}
 
-/* Мобильные устройства */
-@media (max-width: 768px) {
-    .nav {
-        height: 60px;
-        gap: 15px;
-        padding-right: 20px;
-        padding-left: 20px;
-        justify-content: center;
-    }
-    
-    .nav-link {
-        font-size: 12px;
-        padding: 4px 8px;
-    }
-    
-    .header::after {
+    .nav-link::before {
         display: none;
     }
 }
 
-/* Очень маленькие экраны */
-@media (max-width: 480px) {
+
+@media (min-width: 481px) and (max-width: 768px) {
+
     .nav {
-        gap: 10px;
+        gap: 24px;
+        padding-right: 6%;
     }
-    
+
     .nav-link {
-        font-size: 11px;
-        padding: 4px 6px;
+        font-size: 15px;
+    }
+}
+
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero {
+        min-height: 90vh;
+    }
+
+    .hero .container {
+        padding-left: 7%;
+        padding-top: 40vh;
+    }
+
+    .hero-title {
+        font-size: 26px;
+        max-width: 420px;
+    }
+
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+
+    .nav {
+        gap: 36px;
     }
 }
