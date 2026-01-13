@@ -97,8 +97,11 @@
         line-height: 1.15;
         letter-spacing: 1px;
         max-width: 280px;
-        left: 0;
-        white-space: nowrap;
+        white-space: nowrap !important; /* Разрешаем перенос */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        text-align: left;
     }
 }
 
@@ -115,6 +118,7 @@
     .hero-title {
         font-size: 22px;
         max-width: 320px;
+        text-align: left;
     }
 }
 
@@ -131,6 +135,7 @@
     .hero-title {
         font-size: 26px;
         max-width: 420px;
+        text-align: left;
     }
 
 }
@@ -147,6 +152,7 @@
     .hero-title {
         font-size: 28px;
         max-width: 480px;
+        text-align: left;
     }
 
 }
@@ -155,5 +161,6 @@
     .hero-title {
         font-size: 32px;
         max-width: 520px;
+        text-align: left;
     }
 }
