@@ -1,7 +1,6 @@
-// ===== ПРЕДЗАГРУЗКА ИЗОБРАЖЕНИЙ - ЗАПУСКАЕТСЯ СРАЗУ ПРИ ЗАГРУЗКЕ СКРИПТА =====
-// Данные для каруселей (вынесены наружу для ранней предзагрузки)
+// ПРЕДЗАГРУЗКА (оставляем без изменений)
 const carouselImages = {
-    1: [ // Ландшафтные проекты
+    1: [
         'assets/images/carousels/landscape-projects/1.png',
         'assets/images/carousels/landscape-projects/2.png',
         'assets/images/carousels/landscape-projects/3.png',
@@ -15,7 +14,7 @@ const carouselImages = {
         'assets/images/carousels/landscape-projects/11.png',
         'assets/images/carousels/landscape-projects/12.png'
     ],
-    2: [ // Реализация ландшафтных проектов
+    2: [
         'assets/images/carousels/landscape-implementation/1.jpg',
         'assets/images/carousels/landscape-implementation/2.jpg',
         'assets/images/carousels/landscape-implementation/3.jpg',
@@ -23,7 +22,7 @@ const carouselImages = {
         'assets/images/carousels/landscape-implementation/5.jpg',
         'assets/images/carousels/landscape-implementation/6.jpg'
     ],
-    3: [ // Интерьерные проекты
+    3: [
         'assets/images/carousels/interior-projects/1.png',
         'assets/images/carousels/interior-projects/2.png',
         'assets/images/carousels/interior-projects/3.png',
@@ -33,7 +32,7 @@ const carouselImages = {
         'assets/images/carousels/interior-projects/7.jpg',
         'assets/images/carousels/interior-projects/8.jpg'
     ],
-    4: [ // Реализация интерьерных проектов
+    4: [
         'assets/images/carousels/interior-implementation/1.jpg',
         'assets/images/carousels/interior-implementation/2.jpg',
         'assets/images/carousels/interior-implementation/3.jpg',
@@ -45,23 +44,18 @@ const carouselImages = {
     ]
 };
 
-// Кэш предзагруженных изображений
 const preloadedImagesCache = {};
 
-// АГРЕССИВНАЯ ПРЕДЗАГРУЗКА - запускается СРАЗУ при загрузке скрипта
 (function aggressivePreload() {
     console.log('🚀 Начинаем агрессивную предзагрузку всех изображений каруселей...');
     
     let loadedCount = 0;
     let totalCount = 0;
     
-    // Подсчитываем общее количество
     Object.values(carouselImages).forEach(images => {
         totalCount += images.length;
     });
     
-    // Загружаем ВСЕ изображения СРАЗУ через Image объекты
-    // Это самый надежный и быстрый способ предзагрузки
     Object.keys(carouselImages).forEach(carouselId => {
         const images = carouselImages[carouselId];
         
@@ -71,8 +65,6 @@ const preloadedImagesCache = {};
         
         images.forEach((src, index) => {
             const img = new Image();
-            
-            // Устанавливаем src - браузер начнет загрузку немедленно
             img.src = src;
             
             img.onload = () => {
@@ -99,69 +91,85 @@ const preloadedImagesCache = {};
     });
 })();
 
+// ОСНОВНОЙ КОД С МОБИЛЬНЫМ СВАЙПОМ
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Карусели: скрипт запущен');
     
-    // Настройки каруселей
-    const settings = {
-        speed: 60, // Пикселей в секунду
-        gap: 24,
-        imageWidth: 306,
-        autoPlay: true,
-        infinite: true
-    };
-    
-    function applyHoverFix() {
-        const images = document.querySelectorAll('.carousel-image');
-        
-        images.forEach(img => {
-            img.addEventListener('mouseenter', function() {
-                this.style.borderRadius = '10px';
-                this.style.overflow = 'hidden';
-                
-                const innerImg = this.querySelector('img');
-                if (innerImg) {
-                    innerImg.style.borderRadius = '10px';
-                }
-            });
-            
-            img.addEventListener('mouseleave', function() {
-                this.style.borderRadius = '';
-                this.style.overflow = '';
-                
-                const innerImg = this.querySelector('img');
-                if (innerImg) {
-                    innerImg.style.borderRadius = '';
-                }
-            });
-        });
+    // Проверка на мобильное устройство
+    function isMobile() {
+        return window.innerWidth <= 767;
     }
     
-    // Инициализация всех каруселей
+    // НАСТРОЙКИ
+    const settings = {
+        desktop: {
+            speed: 60,
+            gap: 24,
+            imageWidth: 306,
+            autoPlay: true,
+            infinite: true
+        },
+        mobile: {
+            gap: 24,
+            imageWidth: 306,
+            swipeThreshold: 50, // Минимальное расстояние свайпа
+            swipeVelocity: 0.3, // Чувствительность скорости свайпа
+            bounceEffect: true,
+            bounceDuration: 300
+        }
+    };
+    
+    // УБИРАЕМ HOVER ЭФФЕКТЫ НА МОБИЛКАХ
+    function disableHoverOnMobile() {
+        if (isMobile()) {
+            const style = document.createElement('style');
+            style.textContent = `
+                @media (max-width: 767px) {
+                    .carousel-image:hover,
+                    .carousel-image:hover img {
+                        transform: none !important;
+                    }
+                    
+                    .carousel-image {
+                        cursor: grab;
+                        user-select: none;
+                        -webkit-user-select: none;
+                        touch-action: pan-y;
+                    }
+                    
+                    .carousel-image:active {
+                        cursor: grabbing;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+    
+    // ИНИЦИАЛИЗАЦИЯ ВСЕХ КАРУСЕЛЕЙ
     function initCarousels() {
         const carousels = document.querySelectorAll('.carousel-track');
         
         carousels.forEach((track, index) => {
             const carouselId = track.dataset.carousel || (index + 1);
-            initCarousel(track, carouselId);
+            
+            if (isMobile()) {
+                initMobileCarousel(track, carouselId);
+            } else {
+                initDesktopCarousel(track, carouselId);
+            }
         });
         
-        setTimeout(() => {
-            applyHoverFix();
-        }, 100);
+        disableHoverOnMobile();
     }
     
-    // Инициализация одной карусели
-    function initCarousel(track, carouselId) {
+    // ===== ДЕСКТОПНАЯ КАРУСЕЛЬ (старая логика) =====
+    function initDesktopCarousel(track, carouselId) {
         const images = carouselImages[carouselId] || getDefaultImages(carouselId);
         
-        // Очищаем трек
         track.innerHTML = '';
-        
-        // Дублируем картинки МИНИМУМ 3 раза для абсолютно бесшовной прокрутки
         const totalCopies = 3;
         
-        // Добавляем картинки (дублируем несколько раз)
         for (let copy = 0; copy < totalCopies; copy++) {
             images.forEach((src, imgIndex) => {
                 const imgElement = createImageElement(src, carouselId, imgIndex + 1);
@@ -169,8 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Ждем пока DOM обновится и все изображения загрузятся
-        // Затем измеряем РЕАЛЬНУЮ ширину одного набора
         const checkAndStart = () => {
             const firstImage = track.querySelector('.carousel-image');
             const lastImageInSet = track.children[images.length - 1];
@@ -180,7 +186,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Проверяем что все изображения в первом наборе загружены
             const firstSetImages = Array.from(track.children).slice(0, images.length);
             const allLoaded = firstSetImages.every(el => {
                 const img = el.querySelector('img');
@@ -188,97 +193,50 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             if (!allLoaded) {
-                // Ждем еще немного
                 setTimeout(checkAndStart, 50);
                 return;
             }
             
-            // Измеряем реальную ширину одного набора картинок
-            // Используем getBoundingClientRect для точного измерения с учетом всех CSS стилей
             const firstRect = firstImage.getBoundingClientRect();
             const lastRect = lastImageInSet.getBoundingClientRect();
-            
-            // Ширина = расстояние от левого края первой до правого края последней картинки
             let singleSetWidth = lastRect.right - firstRect.left;
             
-            // Если измерение не удалось, используем расчетный метод
-            if (singleSetWidth <= 0 || singleSetWidth < settings.imageWidth) {
-                // Получаем реальный gap из computed styles
+            if (singleSetWidth <= 0 || singleSetWidth < settings.desktop.imageWidth) {
                 const computedStyle = window.getComputedStyle(track);
-                const realGap = parseFloat(computedStyle.gap) || settings.gap;
+                const realGap = parseFloat(computedStyle.gap) || settings.desktop.gap;
                 
-                // Рассчитываем ширину
                 singleSetWidth = 0;
                 for (let i = 0; i < images.length; i++) {
                     const imgEl = track.children[i];
-                    singleSetWidth += imgEl.offsetWidth || settings.imageWidth;
+                    singleSetWidth += imgEl.offsetWidth || settings.desktop.imageWidth;
                     if (i < images.length - 1) {
                         singleSetWidth += realGap;
                     }
                 }
             }
             
-            // Убираем все transition для мгновенного сброса позиции
             track.style.transition = 'none';
             track.style.willChange = 'transform';
             
-            // Запускаем анимацию с РЕАЛЬНОЙ шириной
-            if (settings.autoPlay) {
-                startPerfectInfiniteScroll(track, images.length, singleSetWidth);
+            if (settings.desktop.autoPlay) {
+                startDesktopInfiniteScroll(track, images.length, singleSetWidth);
             }
             
-            console.log(`Карусель ${carouselId} инициализирована: ${images.length} картинок, ширина набора: ${singleSetWidth}px`);
+            console.log(`Десктоп карусель ${carouselId}: ${images.length} картинок, ширина: ${singleSetWidth}px`);
         };
         
-        // Запускаем проверку после обновления DOM
         requestAnimationFrame(() => {
             requestAnimationFrame(checkAndStart);
         });
     }
     
-    // Создаём элемент картинки
-    function createImageElement(src, carouselId, index) {
-        const div = document.createElement('div');
-        div.className = 'carousel-image';
-        
-        const img = document.createElement('img');
-        
-        // Используем предзагруженное изображение если есть
-        if (preloadedImagesCache[carouselId] && preloadedImagesCache[carouselId][index - 1]) {
-            const cached = preloadedImagesCache[carouselId][index - 1];
-            if (cached.element && cached.loaded) {
-                // Используем уже загруженное изображение
-                img.src = cached.element.src;
-            } else {
-                // Используем src из кэша
-                img.src = cached.src || src;
-            }
-        } else {
-            // Если еще не загружено, используем обычный способ
-            img.src = src;
-        }
-        
-        img.alt = `Проект ${index}`;
-        img.loading = 'eager'; // Всегда eager, так как предзагружаем
-        
-        // Если картинка не загрузится
-        img.onerror = function() {
-            this.src = `https://via.placeholder.com/306x306/404040/FFFFFF?text=Проект+${index}`;
-        };
-        
-        div.appendChild(img);
-        return div;
-    }
-    
-    // ИДЕАЛЬНАЯ БЕСКОНЕЧНАЯ ПРОКРУТКА БЕЗ ВИДИМЫХ СКЛЕЕК
-    function startPerfectInfiniteScroll(track, imagesCount, singleSetWidth) {
+    function startDesktopInfiniteScroll(track, imagesCount, singleSetWidth) {
         let position = 0;
         let animationId = null;
         let isScrolling = true;
         const direction = -1;
-        const speed = settings.speed / 60; // пикселей за кадр (при 60fps)
+        const speed = settings.desktop.speed / 60;
         
-        // КРИТИЧЕСКИ ВАЖНО: убираем ВСЕ transition навсегда и настраиваем оптимизацию
         track.style.transition = 'none';
         track.style.willChange = 'transform';
         track.style.transform = 'translateX(0px)';
@@ -291,29 +249,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Двигаем позицию
             position += direction * speed;
             
-            // КРИТИЧЕСКИ ВАЖНО: сбрасываем позицию когда она достигает границы
-            // Для движения влево (direction = -1) position будет отрицательным
             if (position <= -singleSetWidth) {
-                // Сбрасываем позицию - добавляем singleSetWidth
-                // Например: position = -2640, singleSetWidth = 2640
-                // Результат: position = 0 (невидимо для пользователя, так как картинки дублированы)
                 position = position + singleSetWidth;
             }
             
-            // Применяем transform (всегда, один раз)
-            // Используем requestAnimationFrame для гарантии плавности
             track.style.transform = `translateX(${position}px)`;
-            
             animationId = requestAnimationFrame(animate);
         }
         
-        // Запускаем анимацию
         animate();
         
-        // Останавливаем при наведении
         track.addEventListener('mouseenter', () => {
             isScrolling = false;
             if (animationId) {
@@ -322,17 +269,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Возобновляем при уходе курсора
         track.addEventListener('mouseleave', () => {
             isScrolling = true;
-            // Убеждаемся что transition все еще отключен
             track.style.transition = 'none';
             if (!animationId) {
                 animate();
             }
         });
         
-        // Сохраняем функцию остановки
         track._stopAnimation = () => {
             isScrolling = false;
             if (animationId) {
@@ -342,7 +286,361 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    // Получаем картинки по умолчанию
+    // ===== МОБИЛЬНАЯ КАРУСЕЛЬ С СВАЙПОМ =====
+    function initMobileCarousel(track, carouselId) {
+    const images = carouselImages[carouselId] || getDefaultImages(carouselId);
+    track.innerHTML = '';
+
+    // 3 копии
+    const allImages = [...images, ...images, ...images];
+
+    allImages.forEach((src, i) => {
+        const realIndex = i % images.length;
+        track.appendChild(createImageElement(src, carouselId, realIndex + 1));
+    });
+
+    initSmoothInfiniteSwipe(track, images.length);
+}
+   
+
+function initSmoothInfiniteSwipe(track, originalCount) {
+    const imageWidth = settings.mobile.imageWidth;
+    const gap = settings.mobile.gap;
+    const cardWidth = imageWidth + gap;
+
+    let index = originalCount;
+    let startX = 0;
+    let currentX = 0;
+    let dragging = false;
+
+    let autoScrollId = null;
+    let autoPaused = false;
+
+    function setPos(i, animate = true) {
+        track.style.transition = animate ? 'transform 0.35s ease' : 'none';
+        track.style.transform = `translateX(${-i * cardWidth}px)`;
+    }
+
+    function silentJump(i) {
+        requestAnimationFrame(() => {
+            setPos(i, false);
+        });
+    }
+
+    // === АВТОСКРОЛЛ ===
+    function startAuto() {
+        if (autoScrollId) return;
+
+        autoScrollId = setInterval(() => {
+            if (autoPaused) return;
+            index++;
+            setPos(index, true);
+        }, 2600);
+    }
+
+    function stopAuto() {
+        clearInterval(autoScrollId);
+        autoScrollId = null;
+    }
+
+    // === ЛУП ПОСЛЕ АНИМАЦИИ ===
+    track.addEventListener('transitionend', () => {
+        if (index >= originalCount * 2) {
+            index = originalCount;
+            silentJump(index);
+        }
+
+        if (index < originalCount) {
+            index = originalCount * 2 - 1;
+            silentJump(index);
+        }
+    });
+
+    // === СВАЙП ===
+    function onTouchStart(e) {
+        dragging = true;
+        autoPaused = true;
+        stopAuto();
+
+        startX = e.touches[0].clientX;
+        currentX = startX;
+        track.style.transition = 'none';
+    }
+
+    function onTouchMove(e) {
+        if (!dragging) return;
+        const x = e.touches[0].clientX;
+        const delta = x - currentX;
+        currentX = x;
+
+        const offset = -index * cardWidth + delta;
+        track.style.transform = `translateX(${offset}px)`;
+    }
+
+    function onTouchEnd() {
+        if (!dragging) return;
+        dragging = false;
+
+        const delta = currentX - startX;
+
+        if (Math.abs(delta) > settings.mobile.swipeThreshold) {
+            index += delta < 0 ? 1 : -1;
+        }
+
+        setPos(index, true);
+        autoPaused = false;
+        setTimeout(startAuto, 2000);
+    }
+
+    track.addEventListener('touchstart', onTouchStart, { passive: true });
+    track.addEventListener('touchmove', onTouchMove, { passive: true });
+    track.addEventListener('touchend', onTouchEnd);
+    track.addEventListener('touchcancel', onTouchEnd);
+
+    // старт
+    setPos(index, false);
+    startAuto();
+}
+    function initSwipeCarousel(track, totalImages) {
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let currentIndex = 0;
+        let velocity = 0;
+        let lastX = 0;
+        let lastTime = 0;
+        
+        const container = track.parentElement;
+        const imageWidth = settings.mobile.imageWidth;
+        const gap = settings.mobile.gap;
+        const cardWidth = imageWidth + gap;
+        
+        // Рассчитываем максимальный индекс
+        const maxIndex = totalImages - 1;
+        
+        // Функция обновления позиции
+        function updatePosition(animate = true) {
+            const offset = -currentIndex * cardWidth;
+            
+            if (animate) {
+                track.style.transition = 'transform 0.3s ease';
+            } else {
+                track.style.transition = 'none';
+            }
+            
+            track.style.transform = `translateX(${offset}px)`;
+        }
+        
+        // Функция для ограничения индекса
+        function clampIndex(index) {
+            return Math.max(0, Math.min(index, maxIndex));
+        }
+        
+        // Обработчики для свайпа
+        function handleTouchStart(e) {
+            if (!isMobile()) return;
+            
+            isDragging = true;
+            startX = e.touches ? e.touches[0].clientX : e.clientX;
+            currentX = startX;
+            lastX = startX;
+            lastTime = Date.now();
+            
+            track.style.transition = 'none';
+            track.style.cursor = 'grabbing';
+            
+            e.preventDefault();
+        }
+        
+        function handleTouchMove(e) {
+            if (!isDragging || !isMobile()) return;
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const deltaX = clientX - currentX;
+            currentX = clientX;
+            
+            // Рассчитываем velocity
+            const currentTime = Date.now();
+            const timeDiff = currentTime - lastTime;
+            
+            if (timeDiff > 0) {
+                velocity = (clientX - lastX) / timeDiff;
+                lastX = clientX;
+                lastTime = currentTime;
+            }
+            
+            // Рассчитываем новую позицию с резиновым эффектом
+            let newPosition = -currentIndex * cardWidth + deltaX;
+            
+            // Резиновый эффект на границах
+            if (currentIndex === 0 && newPosition > 0) {
+                newPosition = Math.log(deltaX + 1) * 10; // Мягкое сопротивление
+            } else if (currentIndex === maxIndex && newPosition < -maxIndex * cardWidth) {
+                newPosition = -maxIndex * cardWidth - Math.log(-deltaX + 1) * 10;
+            }
+            
+            track.style.transform = `translateX(${newPosition}px)`;
+            
+            e.preventDefault();
+        }
+        
+        function handleTouchEnd(e) {
+            if (!isDragging || !isMobile()) return;
+            
+            isDragging = false;
+            track.style.cursor = 'grab';
+            
+            const deltaX = currentX - startX;
+            const absDeltaX = Math.abs(deltaX);
+            
+            // Определяем направление и силу свайпа
+            let newIndex = currentIndex;
+            
+            if (absDeltaX > settings.mobile.swipeThreshold || Math.abs(velocity) > settings.mobile.swipeVelocity) {
+                if (deltaX > 0 && currentIndex > 0) {
+                    // Свайп вправо
+                    newIndex = currentIndex - 1;
+                } else if (deltaX < 0 && currentIndex < maxIndex) {
+                    // Свайп влево
+                    newIndex = currentIndex + 1;
+                }
+            }
+            
+            // Применяем новый индекс
+            newIndex = clampIndex(newIndex);
+            
+            if (newIndex !== currentIndex) {
+                currentIndex = newIndex;
+                updatePosition(true);
+            } else {
+                // Возвращаем на место с анимацией
+                updatePosition(true);
+            }
+            
+            // Сбрасываем
+            velocity = 0;
+        }
+        
+        // Добавляем обработчики событий
+        track.addEventListener('touchstart', handleTouchStart, { passive: false });
+        track.addEventListener('touchmove', handleTouchMove, { passive: false });
+        track.addEventListener('touchend', handleTouchEnd);
+        track.addEventListener('touchcancel', handleTouchEnd);
+        
+        // Также добавляем поддержку мыши для тестирования
+        track.addEventListener('mousedown', handleTouchStart);
+        track.addEventListener('mousemove', handleTouchMove);
+        track.addEventListener('mouseup', handleTouchEnd);
+        track.addEventListener('mouseleave', handleTouchEnd);
+        
+        // Предотвращаем выделение текста при перетаскивании
+        track.addEventListener('dragstart', (e) => e.preventDefault());
+        
+        // Устанавливаем начальную позицию
+        updatePosition(false);
+        
+        // Добавляем индикаторы точек (опционально)
+        addDotsIndicator(track.parentElement, totalImages, currentIndex, (index) => {
+            currentIndex = clampIndex(index);
+            updatePosition(true);
+        });
+    }
+    
+    // ДОБАВЛЯЕМ ИНДИКАТОР ТОЧЕК (опционально)
+    function addDotsIndicator(container, totalDots, currentIndex, onDotClick) {
+        if (totalDots <= 1) return;
+        
+        const dotsContainer = document.createElement('div');
+        dotsContainer.className = 'carousel-dots';
+        dotsContainer.style.cssText = `
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 10px 0;
+        `;
+        
+        for (let i = 0; i < totalDots; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot';
+            dot.setAttribute('aria-label', `Перейти к слайду ${i + 1}`);
+            dot.style.cssText = `
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                border: none;
+                padding: 0;
+                background: ${i === currentIndex ? '#2B2B2B' : '#D9D9D9'};
+                cursor: pointer;
+                transition: background 0.3s ease;
+            `;
+            
+            dot.addEventListener('click', () => {
+                onDotClick(i);
+                updateDots();
+            });
+            
+            dot.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                onDotClick(i);
+                updateDots();
+            });
+            
+            dotsContainer.appendChild(dot);
+        }
+        
+        function updateDots() {
+            dotsContainer.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                dot.style.background = index === currentIndex ? '#2B2B2B' : '#D9D9D9';
+            });
+        }
+        
+        container.appendChild(dotsContainer);
+    }
+    
+    // СОЗДАНИЕ ЭЛЕМЕНТА КАРТИНКИ (общая функция)
+    function createImageElement(src, carouselId, index) {
+        const div = document.createElement('div');
+        div.className = 'carousel-image';
+        
+        // Убираем hover эффекты на мобилках
+        if (isMobile()) {
+            div.style.cssText += 'cursor: grab; user-select: none;';
+        }
+        
+        const img = document.createElement('img');
+        
+        if (preloadedImagesCache[carouselId] && preloadedImagesCache[carouselId][index - 1]) {
+            const cached = preloadedImagesCache[carouselId][index - 1];
+            if (cached.element && cached.loaded) {
+                img.src = cached.element.src;
+            } else {
+                img.src = cached.src || src;
+            }
+        } else {
+            img.src = src;
+        }
+        
+        img.alt = `Проект ${index}`;
+        img.loading = 'eager';
+        
+        img.onerror = function() {
+            this.src = `https://via.placeholder.com/306x306/404040/FFFFFF?text=Проект+${index}`;
+        };
+        
+        // Убираем увеличение при клике на мобилках
+        if (isMobile()) {
+            img.style.pointerEvents = 'none'; // Не реагирует на клики
+            div.addEventListener('click', (e) => {
+                e.preventDefault(); // Предотвращаем любые действия
+                e.stopPropagation();
+            });
+        }
+        
+        div.appendChild(img);
+        return div;
+    }
+    
     function getDefaultImages(carouselId) {
         const categories = ['landscape', 'implementation', 'interior', 'interior-impl'];
         const category = categories[carouselId - 1] || 'landscape';
@@ -352,26 +650,27 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     }
     
-    // Останавливаем все анимации
-    function stopAllAnimations() {
-        document.querySelectorAll('.carousel-track').forEach(track => {
-            if (track._stopAnimation) {
-                track._stopAnimation();
-            }
-        });
-    }
-    
-    // Переинициализация при изменении размера окна
+    // ПЕРЕИНИЦИАЛИЗАЦИЯ ПРИ ИЗМЕНЕНИИ РАЗМЕРА
     let resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function() {
-            stopAllAnimations();
+            // Останавливаем десктопные анимации
+            document.querySelectorAll('.carousel-track').forEach(track => {
+                if (track._stopAnimation) {
+                    track._stopAnimation();
+                }
+            });
+            
+            // Удаляем старые точки
+            document.querySelectorAll('.carousel-dots').forEach(dots => dots.remove());
+            
+            // Переинициализируем
             initCarousels();
         }, 250);
     });
     
-    // Добавляем CSS для оптимизации производительности
+    // ДОБАВЛЯЕМ ОПТИМИЗАЦИИ
     function addOptimizationStyles() {
         const style = document.createElement('style');
         style.textContent = `
@@ -392,12 +691,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                pointer-events: none; /* Предотвращаем клики на картинке */
+            }
+            
+            /* Для мобилок */
+            @media (max-width: 767px) {
+                .carousel-container {
+                    overflow: hidden;
+                    user-select: none;
+                    -webkit-user-select: none;
+                }
+                
+                .carousel-track {
+                    display: flex;
+                    gap: 24px;
+                    height: 306px;
+                    transition: transform 0.3s ease;
+                    will-change: transform;
+                }
+                
+                .carousel-image {
+                    width: 306px;
+                    min-width: 306px;
+                    height: 306px;
+                    flex-shrink: 0;
+                    cursor: grab;
+                }
+                
+                .carousel-image:active {
+                    cursor: grabbing;
+                }
+                
+                /* Убираем все hover эффекты */
+                .carousel-image:hover,
+                .carousel-image:hover img {
+                    transform: none !important;
+                }
             }
         `;
         document.head.appendChild(style);
     }
     
-    // Инициализация
+    // ЗАПУСК
     addOptimizationStyles();
     initCarousels();
     

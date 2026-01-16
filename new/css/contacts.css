@@ -136,6 +136,7 @@
         overflow-x: hidden;
     }
     
+
     
     /* Заголовок - МОБИЛЬНАЯ ВЕРСИЯ */
     .contacts-title {
@@ -281,13 +282,18 @@
     
     /* Email - адаптивный размер */
     .contact-item[href^="mailto:"] .contact-text {
-        font-size: 16px;
+        font-size: 20px;
         word-break: break-all;
     }
     
+    .contact-item[href*="t.me"] .contact-text,
+.contact-item[href*="telegram.me"] .contact-text {
+    font-size: 20px; /* Тот же размер что и у email */
+    word-break: break-all;
+}
     /* Адрес - адаптивный размер */
     .contact-item[href*="maps.google.com"] .contact-text {
-        font-size: 16px;
+        font-size: 20px;
         line-height: 1.2;
     }
     
