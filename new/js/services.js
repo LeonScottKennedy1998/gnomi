@@ -10,42 +10,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Данные с предзагруженными изображениями
     const servicesData = {
         1: {
-            image: 'assets/images/services/1.png',
+            image: 'assets/images/services/1.webp',
             description: 'Планировка, подбор материалов, цветов и мебели — создание гармоничного и функционального пространства',
             preloaded: null
         },
         2: {
-            image: 'assets/images/services/2.png',
+            image: 'assets/images/services/2.webp',
             description: 'Разработка индивидуальных проектов садов и приусадебных участков — от концепции до 3D-визуализации.',
             preloaded: null
         },
         3: {
-            image: 'assets/images/services/3.png',
+            image: 'assets/images/services/3.webp',
             description: 'Комплексное озеленение, укладка газона, мощение дорожек и установка декоративных элементов.',
             preloaded: null
         },
         4: {
-            image: 'assets/images/services/4.png',
+            image: 'assets/images/services/4.webp',
             description: 'Подбор растений, расстановка по композиции и посадка многолетников, кустарников и декоративных трав.',
             preloaded: null
         },
         5: {
-            image: 'assets/images/services/5.png',
+            image: 'assets/images/services/5.webp',
             description: 'Создание природных композиций из камней и растений для стильного ландшафтного акцента.',
             preloaded: null
         },
         6: {
-            image: 'assets/images/services/6.png',
+            image: 'assets/images/services/6.webp',
             description: 'Проектирование и установка систем автополива, капельного орошения и водоотвода.',
             preloaded: null
         },
         7: {
-            image: 'assets/images/services/7.png',
+            image: 'assets/images/services/7.webp',
             description: 'Создаём декоративные пруды, ручьи и фонтанные композиции, которые наполняют сад живой энергией.',
             preloaded: null
         },
         8: {
-            image: 'assets/images/services/8.png',
+            image: 'assets/images/services/8.webp',
             description: 'Обрезка, удобрение, пересадка и защита растений — регулярное обслуживание вашего участка.',
             preloaded: null
         }

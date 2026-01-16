@@ -1,61 +1,55 @@
 // ПРЕДЗАГРУЗКА (оставляем без изменений)
 const carouselImages = {
     1: [
-        'assets/images/carousels/landscape-projects/1.png',
-        'assets/images/carousels/landscape-projects/2.png',
-        'assets/images/carousels/landscape-projects/3.png',
-        'assets/images/carousels/landscape-projects/4.png',
-        'assets/images/carousels/landscape-projects/5.png',
-        'assets/images/carousels/landscape-projects/6.png',
-        'assets/images/carousels/landscape-projects/7.png',
-        'assets/images/carousels/landscape-projects/8.png',
-        'assets/images/carousels/landscape-projects/9.png',
-        'assets/images/carousels/landscape-projects/10.png',
-        'assets/images/carousels/landscape-projects/11.png',
-        'assets/images/carousels/landscape-projects/12.png'
+        'assets/images/carousels/landscape-projects/1.webp',
+        'assets/images/carousels/landscape-projects/2.webp',
+        'assets/images/carousels/landscape-projects/3.webp',
+        'assets/images/carousels/landscape-projects/4.webp',
+        'assets/images/carousels/landscape-projects/5.webp',
+        'assets/images/carousels/landscape-projects/6.webp',
+        'assets/images/carousels/landscape-projects/7.webp',
+        'assets/images/carousels/landscape-projects/8.webp',
+        'assets/images/carousels/landscape-projects/9.webp',
+        'assets/images/carousels/landscape-projects/10.webp',
+        'assets/images/carousels/landscape-projects/11.webp',
+        'assets/images/carousels/landscape-projects/12.webp'
     ],
     2: [
-        'assets/images/carousels/landscape-implementation/1.jpg',
-        'assets/images/carousels/landscape-implementation/2.jpg',
-        'assets/images/carousels/landscape-implementation/3.jpg',
-        'assets/images/carousels/landscape-implementation/4.jpg',
-        'assets/images/carousels/landscape-implementation/5.jpg',
-        'assets/images/carousels/landscape-implementation/6.jpg'
+        'assets/images/carousels/landscape-implementation/1.webp',
+        'assets/images/carousels/landscape-implementation/2.webp',
+        'assets/images/carousels/landscape-implementation/3.webp',
+        'assets/images/carousels/landscape-implementation/4.webp',
+        'assets/images/carousels/landscape-implementation/5.webp',
+        'assets/images/carousels/landscape-implementation/6.webp'
     ],
     3: [
-        'assets/images/carousels/interior-projects/1.png',
-        'assets/images/carousels/interior-projects/2.png',
-        'assets/images/carousels/interior-projects/3.png',
-        'assets/images/carousels/interior-projects/4.png',
-        'assets/images/carousels/interior-projects/5.png',
-        'assets/images/carousels/interior-projects/6.png',
-        'assets/images/carousels/interior-projects/7.jpg',
-        'assets/images/carousels/interior-projects/8.jpg'
+        'assets/images/carousels/interior-projects/1.webp',
+        'assets/images/carousels/interior-projects/2.webp',
+        'assets/images/carousels/interior-projects/3.webp',
+        'assets/images/carousels/interior-projects/4.webp',
+        'assets/images/carousels/interior-projects/5.webp',
+        'assets/images/carousels/interior-projects/6.webp',
+        'assets/images/carousels/interior-projects/7.webp',
+        'assets/images/carousels/interior-projects/8.webp'
     ],
     4: [
-        'assets/images/carousels/interior-implementation/1.jpg',
-        'assets/images/carousels/interior-implementation/2.jpg',
-        'assets/images/carousels/interior-implementation/3.jpg',
-        'assets/images/carousels/interior-implementation/4.jpg',
-        'assets/images/carousels/interior-implementation/5.jpg',
-        'assets/images/carousels/interior-implementation/6.jpg',
-        'assets/images/carousels/interior-implementation/7.jpg',
-        'assets/images/carousels/interior-implementation/8.jpg'
+        'assets/images/carousels/interior-implementation/1.webp',
+        'assets/images/carousels/interior-implementation/2.webp',
+        'assets/images/carousels/interior-implementation/3.webp',
+        'assets/images/carousels/interior-implementation/4.webp',
+        'assets/images/carousels/interior-implementation/5.webp',
+        'assets/images/carousels/interior-implementation/6.webp',
+        'assets/images/carousels/interior-implementation/7.webp',
+        'assets/images/carousels/interior-implementation/8.webp'
     ]
 };
 
 const preloadedImagesCache = {};
 
-(function aggressivePreload() {
-    console.log('🚀 Начинаем агрессивную предзагрузку всех изображений каруселей...');
+(function optimizedPreload() {
+    console.log('🖼️ Оптимизированная предзагрузка каруселей...');
     
-    let loadedCount = 0;
-    let totalCount = 0;
-    
-    Object.values(carouselImages).forEach(images => {
-        totalCount += images.length;
-    });
-    
+    // ПРЕДЗАГРУЖАЕМ ТОЛЬКО ПЕРВЫЕ 2-3 КАРТИНКИ КАЖДОЙ КАРУСЕЛИ
     Object.keys(carouselImages).forEach(carouselId => {
         const images = carouselImages[carouselId];
         
@@ -63,31 +57,45 @@ const preloadedImagesCache = {};
             preloadedImagesCache[carouselId] = [];
         }
         
-        images.forEach((src, index) => {
+        // Предзагружаем только первые 3 картинки каждой карусели
+        const imagesToPreload = Math.min(3, images.length);
+        
+        for (let i = 0; i < imagesToPreload; i++) {
+            const src = images[i];
             const img = new Image();
+            
+            // Устанавливаем низкий приоритет для всех кроме первых
+            img.fetchPriority = i === 0 ? 'high' : 'low';
+            img.decoding = 'async';
+            img.loading = i === 0 ? 'eager' : 'lazy';
+            
+            // Добавляем таймаут для предотвращения зависания
+            const timeoutId = setTimeout(() => {
+                console.warn(`⏰ Таймаут загрузки: ${src}`);
+                img.src = ''; // Останавливаем загрузку
+            }, 5000);
+            
             img.src = src;
             
             img.onload = () => {
-                preloadedImagesCache[carouselId][index] = {
+                clearTimeout(timeoutId);
+                preloadedImagesCache[carouselId][i] = {
                     src: src,
                     element: img,
                     loaded: true
                 };
-                loadedCount++;
-                if (loadedCount === totalCount) {
-                    console.log(`✅ Все ${totalCount} изображений каруселей предзагружены!`);
-                }
+                console.log(`✅ Загружено: ${src}`);
             };
             
             img.onerror = () => {
-                console.warn(`⚠️ Не удалось загрузить: ${src}`);
-                preloadedImagesCache[carouselId][index] = {
+                clearTimeout(timeoutId);
+                console.warn(`⚠️ Ошибка загрузки: ${src}`);
+                preloadedImagesCache[carouselId][i] = {
                     src: src,
                     loaded: false
                 };
-                loadedCount++;
             };
-        });
+        }
     });
 })();
 
@@ -597,95 +605,114 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // ДОБАВЛЯЕМ ОПТИМИЗАЦИИ
-    function addOptimizationStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
+    // ДОБАВЛЯЕМ ОПТИМИЗАЦИИ
+function addOptimizationStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .carousel-track {
+            will-change: transform;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+        
+        .carousel-image {
+            will-change: transform;
+            backface-visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transform-origin: center center !important;
+        }
+        
+        .carousel-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transition: transform 0.4s ease !important;
+            transform-origin: center center !important;
+        }
+        
+        /* Для мобилок - отключаем все взаимодействия */
+        @media (max-width: 767px) {
+            .carousel-container {
+                overflow: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+            
             .carousel-track {
+                display: flex;
+                gap: 24px;
+                height: 306px;
                 will-change: transform;
-                backface-visibility: hidden;
-                transform: translateZ(0);
-                -webkit-transform: translateZ(0);
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
             }
             
             .carousel-image {
-                will-change: transform;
-                backface-visibility: hidden;
+                width: 306px;
+                min-width: 306px;
+                height: 306px;
+                flex-shrink: 0;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+                pointer-events: none !important;
+                cursor: default !important;
             }
             
-            .carousel-image img {
-                display: block;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                pointer-events: none;
-                -webkit-backface-visibility: hidden;
-                backface-visibility: hidden;
+            /* Убираем все hover эффекты и взаимодействия на мобилках */
+            .carousel-image:hover,
+            .carousel-image:hover img {
+                transform: none !important;
             }
             
-            /* Для мобилок - отключаем все взаимодействия */
-            @media (max-width: 767px) {
-                .carousel-container {
-                    overflow: hidden;
-                    -webkit-overflow-scrolling: touch;
-                }
-                
-                .carousel-track {
-                    display: flex;
-                    gap: 24px;
-                    height: 306px;
-                    will-change: transform;
-                    -webkit-user-select: none;
-                    -moz-user-select: none;
-                    -ms-user-select: none;
-                    user-select: none;
-                }
-                
-                .carousel-image {
-                    width: 306px;
-                    min-width: 306px;
-                    height: 306px;
-                    flex-shrink: 0;
-                    -webkit-tap-highlight-color: transparent;
-                    -webkit-touch-callout: none;
-                    pointer-events: none !important;
-                }
-                
-                /* Убираем все hover эффекты и взаимодействия */
-                .carousel-image:hover,
-                .carousel-image:hover img {
-                    transform: none !important;
-                }
-                
-                .carousel-image,
-                .carousel-track {
-                    cursor: default !important;
-                }
-                
-                /* Отключаем выделение текста */
-                * {
-                    -webkit-user-select: none;
-                    -moz-user-select: none;
-                    -ms-user-select: none;
-                    user-select: none;
-                }
+            .carousel-image,
+            .carousel-track {
+                cursor: default !important;
             }
             
-            /* На десктопе оставляем hover эффекты */
-            @media (min-width: 768px) {
-                .carousel-image:hover {
-                    transform: scale(1.08);
-                    border-radius: 10px;
-                    z-index: 100;
-                }
-                
-                .carousel-image:hover img {
-                    transform: scale(1.1);
-                    border-radius: 10px;
-                }
+            /* Отключаем выделение текста на мобилках */
+            * {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
             }
-        `;
-        document.head.appendChild(style);
-    }
+        }
+        
+        /* На десктопе оставляем hover эффекты */
+        @media (min-width: 768px) {
+            .carousel-image:hover {
+                transform: scale(1.08) !important;
+                border-radius: 10px;
+                z-index: 100;
+            }
+            
+            .carousel-image:hover img {
+                transform: scale(1.1) !important;
+                border-radius: 10px;
+            }
+            
+            /* Оставляем курсор pointer на десктопе */
+            .carousel-image {
+                cursor: pointer !important;
+            }
+        }
+        
+        /* Разрешаем выделение только для инпутов и текстовых областей */
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+    `;
+    document.head.appendChild(style);
+}
     
     // ЗАПУСК ТОЛЬКО ОДИН РАЗ
     addOptimizationStyles();

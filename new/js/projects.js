@@ -7,16 +7,16 @@
     // Список изображений для предзагрузки (только самые важные)
     const criticalImages = [
         // Первые 2 проекта (самое важное)
-        'assets/images/projects/small/project1.jpg',
-        'assets/images/projects/small/project2.jpg',
-        'assets/images/projects/large/project1-1.png',
-        'assets/images/projects/large/project1-2.png',
+        'assets/images/projects/small/project1.webp',
+        'assets/images/projects/small/project2.webp',
+        'assets/images/projects/large/project1-1.webp',
+        'assets/images/projects/large/project1-2.webp',
         
         // Остальные по приоритету
-        'assets/images/projects/small/project3.jpg',
-        'assets/images/projects/small/project4.png',
-        'assets/images/projects/small/project5.png',
-        'assets/images/projects/small/project6.png'
+        'assets/images/projects/small/project3.webp',
+        'assets/images/projects/small/project4.webp',
+        'assets/images/projects/small/project5.webp',
+        'assets/images/projects/small/project6.webp'
     ];
     
     // Предзагрузка критических изображений
@@ -134,7 +134,7 @@
     if (document.readyState === 'loading') {
         // DOM ещё не загружен, предзагружаем самые важные
         const firstImg = new Image();
-        firstImg.src = 'assets/images/projects/small/project1.jpg';
+        firstImg.src = 'assets/images/projects/small/project1.webp';
         firstImg.fetchPriority = 'high';
     }
 })();
