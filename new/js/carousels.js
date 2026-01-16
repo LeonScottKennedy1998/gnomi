@@ -112,10 +112,12 @@ document.addEventListener('DOMContentLoaded', function() {
         mobile: {
             gap: 24,
             imageWidth: 306,
-            swipeThreshold: 50, // Минимальное расстояние свайпа
-            swipeVelocity: 0.3, // Чувствительность скорости свайпа
+            swipeThreshold: 50,
+            swipeVelocity: 0.3,
             bounceEffect: true,
-            bounceDuration: 300
+            bounceDuration: 300,
+            autoScrollSpeed: 2600, // Медленная авто-прокрутка (больше = медленнее)
+            autoScrollDelay: 2000 // Пауза после свайпа
         }
     };
     
@@ -134,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         cursor: grab;
                         user-select: none;
                         -webkit-user-select: none;
-                        touch-action: pan-y;
                     }
                     
                     .carousel-image:active {
@@ -163,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         disableHoverOnMobile();
     }
     
-    // ===== ДЕСКТОПНАЯ КАРУСЕЛЬ (старая логика) =====
+    // ===== ДЕСКТОПНАЯ КАРУСЕЛЬ =====
     function initDesktopCarousel(track, carouselId) {
         const images = carouselImages[carouselId] || getDefaultImages(carouselId);
         
@@ -288,459 +289,311 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ===== МОБИЛЬНАЯ КАРУСЕЛЬ С СВАЙПОМ =====
     function initMobileCarousel(track, carouselId) {
-    const images = carouselImages[carouselId] || getDefaultImages(carouselId);
-    track.innerHTML = '';
-
-    // 3 копии для бесконечного эффекта
-    const allImages = [...images, ...images, ...images];
-
-    allImages.forEach((src, i) => {
-        const realIndex = i % images.length;
-        track.appendChild(createImageElement(src, carouselId, realIndex + 1));
-    });
-
-    initSmoothInfiniteSwipe(track, images.length);
-}
-   
-
-function initSmoothInfiniteSwipe(track, originalCount) {
-    const imageWidth = settings.mobile.imageWidth;
-    const gap = settings.mobile.gap;
-    const cardWidth = imageWidth + gap;
-
-    let index = originalCount; // Начинаем с середины (вторая копия)
-    let startX = 0;
-    let currentX = 0;
-    let dragging = false;
-    let animationStartTime = 0;
-    let lastAutoScrollTime = 0;
-    let startY = 0;
-    let currentY = 0;
-    let lockAxis = null; // 'x' | 'y' | null
-
-
-    let autoScrollId = null;
-    let isAutoScrolling = false;
-    let touchStartTime = 0;
-    
-    // Для отслеживания реального индекса (для отладки)
-    let realIndex = 0;
-
-    function setPosition(i, animate = true) {
-        track.style.transition = animate ? 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
-        track.style.transform = `translateX(${-i * cardWidth}px)`;
+        const images = carouselImages[carouselId] || getDefaultImages(carouselId);
+        track.innerHTML = '';
         
-        // Вычисляем реальный индекс для отладки
-        realIndex = ((i % originalCount) + originalCount) % originalCount;
-    }
-
-    function silentJump(i) {
-        requestAnimationFrame(() => {
-            track.style.transition = 'none';
-            track.style.transform = `translateX(${-i * cardWidth}px)`;
-            
-            // Микро-задержка для сброса transition
-            requestAnimationFrame(() => {
-                track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        // Добавляем 3 копии для бесконечного эффекта
+        const copies = 3;
+        for (let copy = 0; copy < copies; copy++) {
+            images.forEach((src, imgIndex) => {
+                const imgElement = createImageElement(src, carouselId, imgIndex + 1);
+                track.appendChild(imgElement);
             });
-        });
-    }
-
-    // === АВТОСКРОЛЛ ===
-    function startAutoScroll() {
-        if (autoScrollId) return;
-        
-        isAutoScrolling = true;
-        lastAutoScrollTime = Date.now();
-        
-        autoScrollId = setInterval(() => {
-            // Не автоскроллим если:
-            // 1. Драггинг активен
-            // 2. Прошло меньше 2.5 секунд с последнего свайпа
-            // 3. Карусель в процессе анимации
-            if (dragging || 
-                (Date.now() - touchStartTime < 2500) || 
-                (Date.now() - animationStartTime < 350)) {
-                return;
-            }
-            
-            index++;
-            animationStartTime = Date.now();
-            setPosition(index, true);
-            
-        }, 2600); // Интервал между авто-прокрутками
-    }
-
-    function stopAutoScroll() {
-        if (autoScrollId) {
-            clearInterval(autoScrollId);
-            autoScrollId = null;
         }
-        isAutoScrolling = false;
-    }
-
-    // === ОБРАБОТЧИК ЗАВЕРШЕНИЯ АНИМАЦИИ ===
-    track.addEventListener('transitionend', (e) => {
-  if (e.propertyName !== 'transform') return;
-
-  // если попали в 3-ю копию — тихо возвращаемся во 2-ю
-  if (index >= originalCount * 2) {
-    index -= originalCount;
-    silentJump(index);
-  }
-  // если попали в 1-ю копию — тихо возвращаемся во 2-ю
-  else if (index < originalCount) {
-    index += originalCount;
-    silentJump(index);
-  }
-});
-
-    // === СВАЙП НА iPhone (исправленная версия) ===
-    function onTouchStart(e) {
-  if (!isMobile()) return;
-
-  dragging = true;
-  touchStartTime = Date.now();
-  stopAutoScroll();
-
-  const t = e.touches ? e.touches[0] : e;
-  startX = t.clientX;
-  startY = t.clientY;
-  currentX = startX;
-  currentY = startY;
-  lockAxis = null;
-
-  track.style.transition = 'none';
-}
-
-    function onTouchMove(e) {
-  if (!dragging || !isMobile()) return;
-
-  const t = e.touches ? e.touches[0] : e;
-  currentX = t.clientX;
-  currentY = t.clientY;
-
-  const totalDx = currentX - startX;
-  const totalDy = currentY - startY;
-
-  // 1 раз “фиксируем” ось, чтобы iOS не перехватывал жест
-  if (!lockAxis) {
-    lockAxis = Math.abs(totalDx) > Math.abs(totalDy) ? 'x' : 'y';
-  }
-
-  // Если жест горизонтальный — блокируем скролл страницы, иначе отдаём странице вертикальный скролл
-  if (lockAxis === 'x') {
-    e.preventDefault(); // важно для iOS (поэтому passive:false на touchmove)
-    const offset = -index * cardWidth + totalDx; // ✅ накопительный сдвиг
-    track.style.transform = `translateX(${offset}px)`;
-  }
-}
-
-    function onTouchEnd() {
-  if (!dragging || !isMobile()) return;
-  dragging = false;
-
-  const delta = currentX - startX;
-  const absDelta = Math.abs(delta);
-
-  if (lockAxis === 'x' && absDelta > settings.mobile.swipeThreshold) {
-    index += delta < 0 ? 1 : -1;
-  }
-  setPosition(index, true);
-
-  lockAxis = null;
-
-  setTimeout(() => startAutoScroll(), 2000);
-}
-
-    // === ПОДПИСКА НА СОБЫТИЯ (исправлено для iPhone) ===
-    
-    // Для touch событий на iPhone
-    track.addEventListener('touchstart', onTouchStart, { passive: true }); // 🔥 passive: true
-    track.addEventListener('touchmove', onTouchMove, { passive: false });  // 🔥 passive: false, но без preventDefault
-    track.addEventListener('touchend', onTouchEnd);
-    track.addEventListener('touchcancel', onTouchEnd);
-    
-    // Для мыши (тестирование на десктопе)
-    track.addEventListener('mousedown', (e) => {
-        if (isMobile()) return; // На мобилках используем только touch
-        onTouchStart(e);
-    });
-    
-    track.addEventListener('mousemove', (e) => {
-        if (isMobile()) return;
-        onTouchMove(e);
-    });
-    
-    track.addEventListener('mouseup', (e) => {
-        if (isMobile()) return;
-        onTouchEnd(e);
-    });
-    
-    track.addEventListener('mouseleave', (e) => {
-        if (isMobile()) return;
-        onTouchEnd(e);
-    });
-    
-    // Предотвращаем контекстное меню на долгом тапе
-    track.addEventListener('contextmenu', (e) => {
-        if (isMobile()) {
-            e.preventDefault();
-            return false;
-        }
-    });
-    
-    // CSS стили для улучшения производительности на iOS
-    track.style.cssText += `
-        -webkit-overflow-scrolling: touch;
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-    `;
-    
-    // Для каждого изображения добавляем стили для iOS
-    track.querySelectorAll('.carousel-image').forEach(img => {
-        img.style.cssText += `
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-        `;
-    });
-
-    // === ИНИЦИАЛИЗАЦИЯ ===
-    setPosition(index, false);
-    
-    // Запускаем автоскролл с задержкой
-    setTimeout(() => {
-        startAutoScroll();
-    }, 1000);
-    
-    // Сохраняем функцию очистки для ресайза
-    track._cleanup = function() {
-        stopAutoScroll();
-        track.style.transition = '';
-        track.style.transform = '';
-    };
-}
-    function initSwipeCarousel(track, totalImages) {
-        let startX = 0;
-        let currentX = 0;
-        let isDragging = false;
-        let currentIndex = 0;
-        let velocity = 0;
-        let lastX = 0;
-        let lastTime = 0;
         
+        initMobileSwipeCarousel(track, images.length);
+    }
+    
+    function initMobileSwipeCarousel(track, originalCount) {
         const container = track.parentElement;
         const imageWidth = settings.mobile.imageWidth;
         const gap = settings.mobile.gap;
         const cardWidth = imageWidth + gap;
         
-        // Рассчитываем максимальный индекс
-        const maxIndex = totalImages - 1;
+        let currentIndex = originalCount; // Начинаем с середины (2-я копия)
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let autoScrollTimer = null;
+        let isAutoScrolling = false;
+        let isAnimating = false;
+        let lastTouchTime = 0;
+        let lockAxis = null;
+        let startY = 0;
         
-        // Функция обновления позиции
-        function updatePosition(animate = true) {
-            const offset = -currentIndex * cardWidth;
+        // Проверяем валидность картинок
+        const totalItems = track.children.length;
+        if (totalItems === 0 || originalCount === 0) return;
+        
+        // Устанавливаем начальную позицию
+        function setPosition(index, animate = true) {
+            if (isAnimating) return;
+            
+            const position = -index * cardWidth;
             
             if (animate) {
-                track.style.transition = 'transform 0.3s ease';
+                isAnimating = true;
+                track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
             } else {
                 track.style.transition = 'none';
             }
             
-            track.style.transform = `translateX(${offset}px)`;
+            track.style.transform = `translateX(${position}px)`;
+            
+            if (animate) {
+                // Сбрасываем флаг анимации после завершения
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 350);
+            }
         }
         
-        // Функция для ограничения индекса
-        function clampIndex(index) {
-            return Math.max(0, Math.min(index, maxIndex));
+        // Проверяем границы и делаем "тихий" переход
+        function checkBoundaries() {
+            if (isAnimating) return;
+            
+            // Если в третьей копии (индекс >= originalCount * 2)
+            if (currentIndex >= originalCount * 2) {
+                // Прыгаем на соответствующую позицию во второй копии
+                currentIndex = currentIndex - originalCount;
+                setPosition(currentIndex, false);
+            }
+            // Если в первой копии (индекс < originalCount)
+            else if (currentIndex < originalCount) {
+                // Прыгаем на соответствующую позицию во второй копии
+                currentIndex = currentIndex + originalCount;
+                setPosition(currentIndex, false);
+            }
         }
         
-        // Обработчики для свайпа
+        // Автоскролл
+        function startAutoScroll() {
+            if (autoScrollTimer) clearInterval(autoScrollTimer);
+            
+            isAutoScrolling = true;
+            autoScrollTimer = setInterval(() => {
+                // Не автоскроллим если:
+                // 1. Драгаем пальцем
+                // 2. В процессе анимации
+                // 3. Недавно был свайп
+                if (isDragging || isAnimating || (Date.now() - lastTouchTime < settings.mobile.autoScrollDelay)) {
+                    return;
+                }
+                
+                currentIndex++;
+                setPosition(currentIndex, true);
+                
+                // Проверяем границы после анимации
+                setTimeout(checkBoundaries, 350);
+                
+            }, settings.mobile.autoScrollSpeed);
+        }
+        
+        function stopAutoScroll() {
+            if (autoScrollTimer) {
+                clearInterval(autoScrollTimer);
+                autoScrollTimer = null;
+            }
+            isAutoScrolling = false;
+        }
+        
+        // Обработчики свайпа (исправлено для iOS)
         function handleTouchStart(e) {
             if (!isMobile()) return;
             
-            isDragging = true;
-            startX = e.touches ? e.touches[0].clientX : e.clientX;
+            const touch = e.touches ? e.touches[0] : e;
+            startX = touch.clientX;
+            startY = touch.clientY;
             currentX = startX;
-            lastX = startX;
-            lastTime = Date.now();
+            isDragging = true;
+            lockAxis = null;
+            lastTouchTime = Date.now();
             
+            // Останавливаем автоскролл
+            stopAutoScroll();
+            
+            // Отключаем анимацию для плавного драга
             track.style.transition = 'none';
-            track.style.cursor = 'grabbing';
             
-            e.preventDefault();
+            // Предотвращаем стандартное поведение чтобы не скроллилась страница
+            if (e.cancelable) {
+                e.preventDefault();
+            }
         }
         
         function handleTouchMove(e) {
             if (!isDragging || !isMobile()) return;
             
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const deltaX = clientX - currentX;
-            currentX = clientX;
+            const touch = e.touches ? e.touches[0] : e;
+            const moveX = touch.clientX;
+            const moveY = touch.clientY;
             
-            // Рассчитываем velocity
-            const currentTime = Date.now();
-            const timeDiff = currentTime - lastTime;
-            
-            if (timeDiff > 0) {
-                velocity = (clientX - lastX) / timeDiff;
-                lastX = clientX;
-                lastTime = currentTime;
+            // Определяем направление жеста
+            if (!lockAxis) {
+                const deltaX = Math.abs(moveX - startX);
+                const deltaY = Math.abs(moveY - startY);
+                
+                // Если жест больше горизонтальный, чем вертикальный
+                if (deltaX > deltaY && deltaX > 5) {
+                    lockAxis = 'horizontal';
+                    // Блокируем вертикальный скролл страницы
+                    e.preventDefault();
+                } else if (deltaY > deltaX && deltaY > 5) {
+                    lockAxis = 'vertical';
+                    // Разрешаем вертикальный скролл
+                    return;
+                }
             }
             
-            // Рассчитываем новую позицию с резиновым эффектом
-            let newPosition = -currentIndex * cardWidth + deltaX;
-            
-            // Резиновый эффект на границах
-            if (currentIndex === 0 && newPosition > 0) {
-                newPosition = Math.log(deltaX + 1) * 10; // Мягкое сопротивление
-            } else if (currentIndex === maxIndex && newPosition < -maxIndex * cardWidth) {
-                newPosition = -maxIndex * cardWidth - Math.log(-deltaX + 1) * 10;
+            // Если жест горизонтальный - обрабатываем свайп
+            if (lockAxis === 'horizontal') {
+                e.preventDefault();
+                
+                const deltaX = moveX - currentX;
+                currentX = moveX;
+                
+                // Вычисляем новую позицию
+                const currentPosition = -currentIndex * cardWidth;
+                const newPosition = currentPosition + deltaX;
+                
+                track.style.transform = `translateX(${newPosition}px)`;
             }
-            
-            track.style.transform = `translateX(${newPosition}px)`;
-            
-            e.preventDefault();
         }
         
         function handleTouchEnd(e) {
             if (!isDragging || !isMobile()) return;
             
             isDragging = false;
-            track.style.cursor = 'grab';
-            
-            const deltaX = currentX - startX;
+            const endX = currentX;
+            const deltaX = endX - startX;
             const absDeltaX = Math.abs(deltaX);
             
-            // Определяем направление и силу свайпа
-            let newIndex = currentIndex;
-            
-            if (absDeltaX > settings.mobile.swipeThreshold || Math.abs(velocity) > settings.mobile.swipeVelocity) {
-                if (deltaX > 0 && currentIndex > 0) {
-                    // Свайп вправо
-                    newIndex = currentIndex - 1;
-                } else if (deltaX < 0 && currentIndex < maxIndex) {
-                    // Свайп влево
-                    newIndex = currentIndex + 1;
-                }
-            }
-            
-            // Применяем новый индекс
-            newIndex = clampIndex(newIndex);
-            
-            if (newIndex !== currentIndex) {
-                currentIndex = newIndex;
-                updatePosition(true);
+            // Определяем был ли это свайп
+            if (lockAxis === 'horizontal' && absDeltaX > settings.mobile.swipeThreshold) {
+                // Меняем индекс в зависимости от направления
+                const direction = deltaX > 0 ? -1 : 1;
+                currentIndex += direction;
+                
+                // Устанавливаем новую позицию с анимацией
+                setPosition(currentIndex, true);
+                
+                // Проверяем границы после анимации
+                setTimeout(checkBoundaries, 350);
             } else {
-                // Возвращаем на место с анимацией
-                updatePosition(true);
+                // Возвращаем на текущую позицию
+                setPosition(currentIndex, true);
             }
             
-            // Сбрасываем
-            velocity = 0;
+            // Сбрасываем lockAxis
+            lockAxis = null;
+            
+            // Возобновляем автоскролл с задержкой
+            setTimeout(() => {
+                if (!isDragging) {
+                    startAutoScroll();
+                }
+            }, settings.mobile.autoScrollDelay);
         }
         
-        // Добавляем обработчики событий
+        // Подписка на события
+        // Для iOS: используем passive: false на touchmove чтобы можно было предотвратить скролл страницы
         track.addEventListener('touchstart', handleTouchStart, { passive: false });
         track.addEventListener('touchmove', handleTouchMove, { passive: false });
         track.addEventListener('touchend', handleTouchEnd);
         track.addEventListener('touchcancel', handleTouchEnd);
         
-        // Также добавляем поддержку мыши для тестирования
-        track.addEventListener('mousedown', handleTouchStart);
-        track.addEventListener('mousemove', handleTouchMove);
-        track.addEventListener('mouseup', handleTouchEnd);
-        track.addEventListener('mouseleave', handleTouchEnd);
-        
-        // Предотвращаем выделение текста при перетаскивании
-        track.addEventListener('dragstart', (e) => e.preventDefault());
-        
-        // Устанавливаем начальную позицию
-        updatePosition(false);
-        
-        // Добавляем индикаторы точек (опционально)
-        addDotsIndicator(track.parentElement, totalImages, currentIndex, (index) => {
-            currentIndex = clampIndex(index);
-            updatePosition(true);
+        // Для тестирования на десктопе
+        track.addEventListener('mousedown', (e) => {
+            if (isMobile()) return;
+            handleTouchStart(e);
+            e.preventDefault();
         });
-    }
-    
-    // ДОБАВЛЯЕМ ИНДИКАТОР ТОЧЕК (опционально)
-    function addDotsIndicator(container, totalDots, currentIndex, onDotClick) {
-        if (totalDots <= 1) return;
         
-        const dotsContainer = document.createElement('div');
-        dotsContainer.className = 'carousel-dots';
-        dotsContainer.style.cssText = `
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 15px;
-            padding: 10px 0;
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging || !isMobile()) return;
+            handleTouchMove(e);
+        });
+        
+        document.addEventListener('mouseup', (e) => {
+            if (!isDragging || !isMobile()) return;
+            handleTouchEnd(e);
+        });
+        
+        // Для iOS добавляем специальные стили
+        container.style.cssText += `
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y pinch-zoom;
         `;
         
-        for (let i = 0; i < totalDots; i++) {
-            const dot = document.createElement('button');
-            dot.className = 'carousel-dot';
-            dot.setAttribute('aria-label', `Перейти к слайду ${i + 1}`);
-            dot.style.cssText = `
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                border: none;
-                padding: 0;
-                background: ${i === currentIndex ? '#2B2B2B' : '#D9D9D9'};
-                cursor: pointer;
-                transition: background 0.3s ease;
-            `;
-            
-            dot.addEventListener('click', () => {
-                onDotClick(i);
-                updateDots();
-            });
-            
-            dot.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                onDotClick(i);
-                updateDots();
-            });
-            
-            dotsContainer.appendChild(dot);
-        }
+        track.style.cssText += `
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-tap-highlight-color: transparent;
+        `;
         
-        function updateDots() {
-            dotsContainer.querySelectorAll('.carousel-dot').forEach((dot, index) => {
-                dot.style.background = index === currentIndex ? '#2B2B2B' : '#D9D9D9';
-            });
-        }
+        // Устанавливаем начальную позицию
+        setPosition(currentIndex, false);
         
-        container.appendChild(dotsContainer);
+        // Запускаем автоскролл
+        setTimeout(() => {
+            startAutoScroll();
+        }, 1000);
+        
+        // Сохраняем функцию очистки
+        track._cleanup = function() {
+            stopAutoScroll();
+        };
     }
     
-    // СОЗДАНИЕ ЭЛЕМЕНТА КАРТИНКИ (общая функция)
+    // СОЗДАНИЕ ЭЛЕМЕНТА КАРТИНКИ
     function createImageElement(src, carouselId, index) {
-    const div = document.createElement('div');
-    div.className = 'carousel-image';
-
-    const img = document.createElement('img');
-    img.src = src;
-    img.loading = 'eager'; // 🔥 не lazy
-    img.decoding = 'async';
-    img.style.opacity = '0';
-
-    img.onload = () => {
+        const div = document.createElement('div');
+        div.className = 'carousel-image';
+        
+        // Стили для предотвращения выделения на iOS
+        div.style.cssText = `
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        `;
+        
+        const img = document.createElement('img');
+        
+        // Используем кэш предзагрузки
+        if (preloadedImagesCache[carouselId] && preloadedImagesCache[carouselId][index - 1]) {
+            const cached = preloadedImagesCache[carouselId][index - 1];
+            if (cached.element && cached.loaded) {
+                img.src = cached.element.src;
+            } else {
+                img.src = cached.src || src;
+            }
+        } else {
+            img.src = src;
+        }
+        
+        img.alt = `Проект ${index}`;
+        img.loading = 'eager';
+        img.decoding = 'async';
+        
+        // Для плавной загрузки
+        img.style.opacity = '0';
         img.style.transition = 'opacity 0.3s ease';
-        img.style.opacity = '1';
-    };
-
-    img.onerror = () => {
-        img.style.opacity = '1';
-        img.style.background = '#444';
-    };
-
-    div.appendChild(img);
-    return div;
-}
+        
+        img.onload = () => {
+            img.style.opacity = '1';
+        };
+        
+        img.onerror = () => {
+            img.src = `https://via.placeholder.com/306x306/404040/FFFFFF?text=Проект+${index}`;
+            img.style.opacity = '1';
+        };
+        
+        div.appendChild(img);
+        return div;
+    }
     
     function getDefaultImages(carouselId) {
         const categories = ['landscape', 'implementation', 'interior', 'interior-impl'];
@@ -756,22 +609,22 @@ function initSmoothInfiniteSwipe(track, originalCount) {
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function() {
-            // Останавливаем десктопные анимации
+            // Останавливаем все анимации
             document.querySelectorAll('.carousel-track').forEach(track => {
                 if (track._stopAnimation) {
                     track._stopAnimation();
                 }
+                if (track._cleanup) {
+                    track._cleanup();
+                }
             });
-            
-            // Удаляем старые точки
-            document.querySelectorAll('.carousel-dots').forEach(dots => dots.remove());
             
             // Переинициализируем
             initCarousels();
         }, 250);
     });
     
-    // ДОБАВЛЯЕМ ОПТИМИЗАЦИИ
+    // ДОБАВЛЯЕМ ОПТИМИЗАЦИИ ДЛЯ iOS
     function addOptimizationStyles() {
         const style = document.createElement('style');
         style.textContent = `
@@ -792,25 +645,26 @@ function initSmoothInfiniteSwipe(track, originalCount) {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                pointer-events: none; /* Предотвращаем клики на картинке */
+                pointer-events: none;
             }
             
-            /* Для мобилок */
+            /* Для iOS и мобилок */
             @media (max-width: 767px) {
                 .carousel-container {
                     overflow: hidden;
-                    user-select: none;
-                    -webkit-user-select: none;
-                    touch-action: pan-y;
+                    -webkit-overflow-scrolling: touch;
+                    touch-action: pan-y pinch-zoom;
                 }
                 
                 .carousel-track {
                     display: flex;
                     gap: 24px;
                     height: 306px;
-                    transition: transform 0.3s ease;
                     will-change: transform;
-                    touch-action: pan-y;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
                 }
                 
                 .carousel-image {
@@ -818,17 +672,30 @@ function initSmoothInfiniteSwipe(track, originalCount) {
                     min-width: 306px;
                     height: 306px;
                     flex-shrink: 0;
-                    cursor: grab;
+                    -webkit-tap-highlight-color: transparent;
+                    -webkit-touch-callout: none;
                 }
                 
-                .carousel-image:active {
-                    cursor: grabbing;
-                }
-                
-                /* Убираем все hover эффекты */
+                /* Убираем все hover эффекты на мобилках */
                 .carousel-image:hover,
                 .carousel-image:hover img {
                     transform: none !important;
+                }
+                
+                /* Отключаем выделение текста на iOS */
+                * {
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                }
+                
+                /* Разрешаем выделение только для инпутов и текстовых областей */
+                input, textarea {
+                    -webkit-user-select: text;
+                    -moz-user-select: text;
+                    -ms-user-select: text;
+                    user-select: text;
                 }
             }
         `;
