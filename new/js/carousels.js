@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const images = carouselImages[carouselId] || getDefaultImages(carouselId);
     track.innerHTML = '';
 
-    // 3 копии
+    // 3 копии для бесконечного эффекта
     const allImages = [...images, ...images, ...images];
 
     allImages.forEach((src, i) => {
@@ -308,99 +308,218 @@ function initSmoothInfiniteSwipe(track, originalCount) {
     const gap = settings.mobile.gap;
     const cardWidth = imageWidth + gap;
 
-    let index = originalCount;
+    let index = originalCount; // Начинаем с середины (вторая копия)
     let startX = 0;
     let currentX = 0;
     let dragging = false;
+    let animationStartTime = 0;
+    let lastAutoScrollTime = 0;
 
     let autoScrollId = null;
-    let autoPaused = false;
+    let isAutoScrolling = false;
+    let touchStartTime = 0;
+    
+    // Для отслеживания реального индекса (для отладки)
+    let realIndex = 0;
 
-    function setPos(i, animate = true) {
-        track.style.transition = animate ? 'transform 0.35s ease' : 'none';
+    function setPosition(i, animate = true) {
+        track.style.transition = animate ? 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
         track.style.transform = `translateX(${-i * cardWidth}px)`;
+        
+        // Вычисляем реальный индекс для отладки
+        realIndex = ((i % originalCount) + originalCount) % originalCount;
     }
 
     function silentJump(i) {
         requestAnimationFrame(() => {
-            setPos(i, false);
+            track.style.transition = 'none';
+            track.style.transform = `translateX(${-i * cardWidth}px)`;
+            
+            // Микро-задержка для сброса transition
+            requestAnimationFrame(() => {
+                track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            });
         });
     }
 
     // === АВТОСКРОЛЛ ===
-    function startAuto() {
+    function startAutoScroll() {
         if (autoScrollId) return;
-
+        
+        isAutoScrolling = true;
+        lastAutoScrollTime = Date.now();
+        
         autoScrollId = setInterval(() => {
-            if (autoPaused) return;
+            // Не автоскроллим если:
+            // 1. Драггинг активен
+            // 2. Прошло меньше 2.5 секунд с последнего свайпа
+            // 3. Карусель в процессе анимации
+            if (dragging || 
+                (Date.now() - touchStartTime < 2500) || 
+                (Date.now() - animationStartTime < 350)) {
+                return;
+            }
+            
             index++;
-            setPos(index, true);
-        }, 2600);
+            animationStartTime = Date.now();
+            setPosition(index, true);
+            
+        }, 2600); // Интервал между авто-прокрутками
     }
 
-    function stopAuto() {
-        clearInterval(autoScrollId);
-        autoScrollId = null;
+    function stopAutoScroll() {
+        if (autoScrollId) {
+            clearInterval(autoScrollId);
+            autoScrollId = null;
+        }
+        isAutoScrolling = false;
     }
 
-    // === ЛУП ПОСЛЕ АНИМАЦИИ ===
-    track.addEventListener('transitionend', () => {
-        if (index >= originalCount * 2) {
+    // === ОБРАБОТЧИК ЗАВЕРШЕНИЯ АНИМАЦИИ ===
+    track.addEventListener('transitionend', (e) => {
+        if (e.propertyName !== 'transform') return;
+        
+        // Проверяем границы и делаем "тихий" переход
+        if (index >= originalCount * 2 - 1) {
+            // Достигли конца третьей копии - прыгаем на начало второй
             index = originalCount;
             silentJump(index);
-        }
-
-        if (index < originalCount) {
-            index = originalCount * 2 - 1;
+        } else if (index < originalCount) {
+            // Достигли начала первой копии - прыгаем на конец второй
+            index = originalCount * 2 - 2;
             silentJump(index);
         }
     });
 
-    // === СВАЙП ===
+    // === СВАЙП НА iPhone (исправленная версия) ===
     function onTouchStart(e) {
+        if (!isMobile()) return;
+        
         dragging = true;
-        autoPaused = true;
-        stopAuto();
-
-        startX = e.touches[0].clientX;
+        touchStartTime = Date.now();
+        
+        // Останавливаем автоскролл
+        stopAutoScroll();
+        
+        // Получаем начальную позицию
+        startX = e.touches ? e.touches[0].clientX : e.clientX;
         currentX = startX;
+        
+        // Отключаем transition для плавного драга
         track.style.transition = 'none';
+        
+        // Для iPhone важно НЕ использовать preventDefault здесь
+        // Используем passive: true для touchstart
     }
 
     function onTouchMove(e) {
-    if (!dragging) return;
-
-    e.preventDefault(); // 🔥 КЛЮЧЕВО
-    const x = e.touches[0].clientX;
-    const delta = x - currentX;
-    currentX = x;
-
-    const offset = -index * cardWidth + delta;
-    track.style.transform = `translateX(${offset}px)`;
-}
-    function onTouchEnd() {
-        if (!dragging) return;
-        dragging = false;
-
-        const delta = currentX - startX;
-
-        if (Math.abs(delta) > settings.mobile.swipeThreshold) {
-            index += delta < 0 ? 1 : -1;
-        }
-
-        setPos(index, true);
-        autoPaused = false;
-        setTimeout(startAuto, 2000);
+        if (!dragging || !isMobile()) return;
+        
+        // Для iPhone ВАЖНО: не используем preventDefault на touchmove
+        // если только действительно не нужно блокировать скролл страницы
+        // В нашем случае используем passive: false но без preventDefault
+        
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const delta = x - currentX;
+        currentX = x;
+        
+        // Вычисляем новую позицию
+        const offset = -index * cardWidth + delta;
+        track.style.transform = `translateX(${offset}px)`;
+        
+        // Для плавности на iPhone
+        e.stopPropagation();
     }
 
-    track.addEventListener('touchstart', onTouchStart, { passive: true });
-    track.addEventListener('touchmove', onTouchMove, { passive: false });
+    function onTouchEnd(e) {
+        if (!dragging || !isMobile()) return;
+        dragging = false;
+        
+        const delta = currentX - startX;
+        const absDelta = Math.abs(delta);
+        
+        // Определяем, был ли это свайп или просто тап
+        if (absDelta > settings.mobile.swipeThreshold) {
+            // Это был свайп - меняем индекс
+            index += delta < 0 ? 1 : -1;
+            setPosition(index, true);
+        } else {
+            // Просто отпустили - возвращаем на текущую позицию
+            setPosition(index, true);
+        }
+        
+        // Перезапускаем автоскролл через 2 секунды
+        setTimeout(() => {
+            startAutoScroll();
+        }, 2000);
+    }
+
+    // === ПОДПИСКА НА СОБЫТИЯ (исправлено для iPhone) ===
+    
+    // Для touch событий на iPhone
+    track.addEventListener('touchstart', onTouchStart, { passive: true }); // 🔥 passive: true
+    track.addEventListener('touchmove', onTouchMove, { passive: false });  // 🔥 passive: false, но без preventDefault
     track.addEventListener('touchend', onTouchEnd);
     track.addEventListener('touchcancel', onTouchEnd);
+    
+    // Для мыши (тестирование на десктопе)
+    track.addEventListener('mousedown', (e) => {
+        if (isMobile()) return; // На мобилках используем только touch
+        onTouchStart(e);
+    });
+    
+    track.addEventListener('mousemove', (e) => {
+        if (isMobile()) return;
+        onTouchMove(e);
+    });
+    
+    track.addEventListener('mouseup', (e) => {
+        if (isMobile()) return;
+        onTouchEnd(e);
+    });
+    
+    track.addEventListener('mouseleave', (e) => {
+        if (isMobile()) return;
+        onTouchEnd(e);
+    });
+    
+    // Предотвращаем контекстное меню на долгом тапе
+    track.addEventListener('contextmenu', (e) => {
+        if (isMobile()) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // CSS стили для улучшения производительности на iOS
+    track.style.cssText += `
+        -webkit-overflow-scrolling: touch;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    `;
+    
+    // Для каждого изображения добавляем стили для iOS
+    track.querySelectorAll('.carousel-image').forEach(img => {
+        img.style.cssText += `
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        `;
+    });
 
-    // старт
-    setPos(index, false);
-    startAuto();
+    // === ИНИЦИАЛИЗАЦИЯ ===
+    setPosition(index, false);
+    
+    // Запускаем автоскролл с задержкой
+    setTimeout(() => {
+        startAutoScroll();
+    }, 1000);
+    
+    // Сохраняем функцию очистки для ресайза
+    track._cleanup = function() {
+        stopAutoScroll();
+        track.style.transition = '';
+        track.style.transform = '';
+    };
 }
     function initSwipeCarousel(track, totalImages) {
         let startX = 0;
