@@ -314,6 +314,10 @@ function initSmoothInfiniteSwipe(track, originalCount) {
     let dragging = false;
     let animationStartTime = 0;
     let lastAutoScrollTime = 0;
+    let startY = 0;
+    let currentY = 0;
+    let lockAxis = null; // 'x' | 'y' | null
+
 
     let autoScrollId = null;
     let isAutoScrolling = false;
@@ -377,82 +381,77 @@ function initSmoothInfiniteSwipe(track, originalCount) {
 
     // === ОБРАБОТЧИК ЗАВЕРШЕНИЯ АНИМАЦИИ ===
     track.addEventListener('transitionend', (e) => {
-        if (e.propertyName !== 'transform') return;
-        
-        // Проверяем границы и делаем "тихий" переход
-        if (index >= originalCount * 2 - 1) {
-            // Достигли конца третьей копии - прыгаем на начало второй
-            index = originalCount;
-            silentJump(index);
-        } else if (index < originalCount) {
-            // Достигли начала первой копии - прыгаем на конец второй
-            index = originalCount * 2 - 2;
-            silentJump(index);
-        }
-    });
+  if (e.propertyName !== 'transform') return;
+
+  // если попали в 3-ю копию — тихо возвращаемся во 2-ю
+  if (index >= originalCount * 2) {
+    index -= originalCount;
+    silentJump(index);
+  }
+  // если попали в 1-ю копию — тихо возвращаемся во 2-ю
+  else if (index < originalCount) {
+    index += originalCount;
+    silentJump(index);
+  }
+});
 
     // === СВАЙП НА iPhone (исправленная версия) ===
     function onTouchStart(e) {
-        if (!isMobile()) return;
-        
-        dragging = true;
-        touchStartTime = Date.now();
-        
-        // Останавливаем автоскролл
-        stopAutoScroll();
-        
-        // Получаем начальную позицию
-        startX = e.touches ? e.touches[0].clientX : e.clientX;
-        currentX = startX;
-        
-        // Отключаем transition для плавного драга
-        track.style.transition = 'none';
-        
-        // Для iPhone важно НЕ использовать preventDefault здесь
-        // Используем passive: true для touchstart
-    }
+  if (!isMobile()) return;
+
+  dragging = true;
+  touchStartTime = Date.now();
+  stopAutoScroll();
+
+  const t = e.touches ? e.touches[0] : e;
+  startX = t.clientX;
+  startY = t.clientY;
+  currentX = startX;
+  currentY = startY;
+  lockAxis = null;
+
+  track.style.transition = 'none';
+}
 
     function onTouchMove(e) {
-        if (!dragging || !isMobile()) return;
-        
-        // Для iPhone ВАЖНО: не используем preventDefault на touchmove
-        // если только действительно не нужно блокировать скролл страницы
-        // В нашем случае используем passive: false но без preventDefault
-        
-        const x = e.touches ? e.touches[0].clientX : e.clientX;
-        const delta = x - currentX;
-        currentX = x;
-        
-        // Вычисляем новую позицию
-        const offset = -index * cardWidth + delta;
-        track.style.transform = `translateX(${offset}px)`;
-        
-        // Для плавности на iPhone
-        e.stopPropagation();
-    }
+  if (!dragging || !isMobile()) return;
 
-    function onTouchEnd(e) {
-        if (!dragging || !isMobile()) return;
-        dragging = false;
-        
-        const delta = currentX - startX;
-        const absDelta = Math.abs(delta);
-        
-        // Определяем, был ли это свайп или просто тап
-        if (absDelta > settings.mobile.swipeThreshold) {
-            // Это был свайп - меняем индекс
-            index += delta < 0 ? 1 : -1;
-            setPosition(index, true);
-        } else {
-            // Просто отпустили - возвращаем на текущую позицию
-            setPosition(index, true);
-        }
-        
-        // Перезапускаем автоскролл через 2 секунды
-        setTimeout(() => {
-            startAutoScroll();
-        }, 2000);
-    }
+  const t = e.touches ? e.touches[0] : e;
+  currentX = t.clientX;
+  currentY = t.clientY;
+
+  const totalDx = currentX - startX;
+  const totalDy = currentY - startY;
+
+  // 1 раз “фиксируем” ось, чтобы iOS не перехватывал жест
+  if (!lockAxis) {
+    lockAxis = Math.abs(totalDx) > Math.abs(totalDy) ? 'x' : 'y';
+  }
+
+  // Если жест горизонтальный — блокируем скролл страницы, иначе отдаём странице вертикальный скролл
+  if (lockAxis === 'x') {
+    e.preventDefault(); // важно для iOS (поэтому passive:false на touchmove)
+    const offset = -index * cardWidth + totalDx; // ✅ накопительный сдвиг
+    track.style.transform = `translateX(${offset}px)`;
+  }
+}
+
+    function onTouchEnd() {
+  if (!dragging || !isMobile()) return;
+  dragging = false;
+
+  const delta = currentX - startX;
+  const absDelta = Math.abs(delta);
+
+  if (lockAxis === 'x' && absDelta > settings.mobile.swipeThreshold) {
+    index += delta < 0 ? 1 : -1;
+  }
+  setPosition(index, true);
+
+  lockAxis = null;
+
+  setTimeout(() => startAutoScroll(), 2000);
+}
 
     // === ПОДПИСКА НА СОБЫТИЯ (исправлено для iPhone) ===
     
@@ -802,6 +801,7 @@ function initSmoothInfiniteSwipe(track, originalCount) {
                     overflow: hidden;
                     user-select: none;
                     -webkit-user-select: none;
+                    touch-action: pan-y;
                 }
                 
                 .carousel-track {
@@ -810,6 +810,7 @@ function initSmoothInfiniteSwipe(track, originalCount) {
                     height: 306px;
                     transition: transform 0.3s ease;
                     will-change: transform;
+                    touch-action: pan-y;
                 }
                 
                 .carousel-image {
