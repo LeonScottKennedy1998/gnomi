@@ -368,15 +368,16 @@ function initSmoothInfiniteSwipe(track, originalCount) {
     }
 
     function onTouchMove(e) {
-        if (!dragging) return;
-        const x = e.touches[0].clientX;
-        const delta = x - currentX;
-        currentX = x;
+    if (!dragging) return;
 
-        const offset = -index * cardWidth + delta;
-        track.style.transform = `translateX(${offset}px)`;
-    }
+    e.preventDefault(); // 🔥 КЛЮЧЕВО
+    const x = e.touches[0].clientX;
+    const delta = x - currentX;
+    currentX = x;
 
+    const offset = -index * cardWidth + delta;
+    track.style.transform = `translateX(${offset}px)`;
+}
     function onTouchEnd() {
         if (!dragging) return;
         dragging = false;
@@ -393,7 +394,7 @@ function initSmoothInfiniteSwipe(track, originalCount) {
     }
 
     track.addEventListener('touchstart', onTouchStart, { passive: true });
-    track.addEventListener('touchmove', onTouchMove, { passive: true });
+    track.addEventListener('touchmove', onTouchMove, { passive: false });
     track.addEventListener('touchend', onTouchEnd);
     track.addEventListener('touchcancel', onTouchEnd);
 
@@ -600,46 +601,28 @@ function initSmoothInfiniteSwipe(track, originalCount) {
     
     // СОЗДАНИЕ ЭЛЕМЕНТА КАРТИНКИ (общая функция)
     function createImageElement(src, carouselId, index) {
-        const div = document.createElement('div');
-        div.className = 'carousel-image';
-        
-        // Убираем hover эффекты на мобилках
-        if (isMobile()) {
-            div.style.cssText += 'cursor: grab; user-select: none;';
-        }
-        
-        const img = document.createElement('img');
-        
-        if (preloadedImagesCache[carouselId] && preloadedImagesCache[carouselId][index - 1]) {
-            const cached = preloadedImagesCache[carouselId][index - 1];
-            if (cached.element && cached.loaded) {
-                img.src = cached.element.src;
-            } else {
-                img.src = cached.src || src;
-            }
-        } else {
-            img.src = src;
-        }
-        
-        img.alt = `Проект ${index}`;
-        img.loading = 'eager';
-        
-        img.onerror = function() {
-            this.src = `https://via.placeholder.com/306x306/404040/FFFFFF?text=Проект+${index}`;
-        };
-        
-        // Убираем увеличение при клике на мобилках
-        if (isMobile()) {
-            img.style.pointerEvents = 'none'; // Не реагирует на клики
-            div.addEventListener('click', (e) => {
-                e.preventDefault(); // Предотвращаем любые действия
-                e.stopPropagation();
-            });
-        }
-        
-        div.appendChild(img);
-        return div;
-    }
+    const div = document.createElement('div');
+    div.className = 'carousel-image';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.loading = 'eager'; // 🔥 не lazy
+    img.decoding = 'async';
+    img.style.opacity = '0';
+
+    img.onload = () => {
+        img.style.transition = 'opacity 0.3s ease';
+        img.style.opacity = '1';
+    };
+
+    img.onerror = () => {
+        img.style.opacity = '1';
+        img.style.background = '#444';
+    };
+
+    div.appendChild(img);
+    return div;
+}
     
     function getDefaultImages(carouselId) {
         const categories = ['landscape', 'implementation', 'interior', 'interior-impl'];
