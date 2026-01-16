@@ -1,0 +1,50 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /cgi-bin/
+Disallow: /private/
+Disallow: /tmp/
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+
+Allow: /assets/images/*.jpg
+Allow: /assets/images/*.png
+Allow: /assets/images/*.webp
+Allow: /assets/images/*.svg
+
+Allow: /css/
+Allow: /js/
+
+Host: https://gnomgarden.ru/  # или ваш домен
+
+Sitemap: https://gnomgarden.ru/sitemap.xml
+
+User-agent: Yandex
+Allow: /
+Disallow: /admin/
+Clean-param: utm_source&utm_medium&utm_campaign /
+Host: https://gnomgarden.ru/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /search
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MegaIndex.ru
+Disallow: /
