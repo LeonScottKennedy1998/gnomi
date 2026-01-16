@@ -1,13 +1,9 @@
-/* Блок прайсов */
+/* Десктоп */
 .pricing-section {
     background: #FFF;
     padding: 100px 0;
-    min-height: auto;
-    width: 100%;
 }
 
-
-/* Блок одной таблицы с прайсом */
 .pricing-block {
     margin-bottom: 120px;
 }
@@ -16,49 +12,41 @@
     margin-bottom: 0;
 }
 
-/* Заголовок прайса */
 .pricing-title {
     color: #222;
     font-family: 'Unbounded', sans-serif;
     font-size: 36px;
     font-weight: 500;
-    line-height: normal;
     letter-spacing: 1.8px;
-    margin: 0 0 125px 0;
-    text-align: left;
+    margin: 0 0 125px;
     padding-left: 20%;
 }
 
-/* Таблица - используем Flex как в Figma */
 .pricing-table {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 40px;
-  position: relative;
-  max-width: 900px; /* Уменьшаем максимальную ширину */
-  margin-left: 20%; /* Смещаем на уровень заголовка */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+    max-width: 900px;
+    margin-left: 20%;
 }
 
 .table-header {
-  display: flex;
-  align-items: center;
-  gap: 15px; /* Уменьшили с 24px */
-  padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 20px;
 }
 
 .table-row {
-  display: flex;
-  align-items: center;
-  gap: 15px; /* Уменьшили с 24px */
-  padding: 6px 0;
-  border-bottom: 3px solid black;
-  min-height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 6px 0;
+    border-bottom: 3px solid #000;
+    min-height: 40px;
 }
 
-
-
-/* Ячейка таблицы */
 .table-cell {
     color: #222;
     font-family: 'Unbounded', sans-serif;
@@ -71,21 +59,18 @@
     align-items: center;
 }
 
-/* Заголовочная ячейка */
 .header-cell {
     font-weight: 500;
     font-size: 18px;
     color: #2B2B2B;
 }
 
-/* Первая колонка шире (Наименование работы) */
 .table-row .table-cell:nth-child(1),
 .table-header .header-cell:nth-child(1) {
-    flex: 2; /* В 2 раза шире остальных */
+    flex: 2;
     max-width: 60%;
 }
 
-/* Вторая и третья колонки одинаковой ширины */
 .table-row .table-cell:nth-child(2),
 .table-row .table-cell:nth-child(3),
 .table-header .header-cell:nth-child(2),
@@ -94,31 +79,26 @@
     max-width: 20%;
 }
 
-/* Футер под таблицей (текст + стрелка) */
 .pricing-footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  margin-top: 30px;
-  margin-left: 20%; /* Совпадает с таблицей */
-  max-width: 800px; /* Такая же ширина как у таблицы */
-  padding-right: 0; /* Убираем фиксированный отступ */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    margin-left: 20%;
+    max-width: 800px;
 }
 
-/* Текст под таблицей */
 .pricing-note {
     color: #000;
     font-family: 'Unbounded', sans-serif;
     font-size: 12px;
     font-weight: 400;
-    line-height: normal;
     margin: 0;
     text-align: right;
     white-space: nowrap;
 }
 
-/* Стрелка для скролла к контактам */
 .pricing-arrow {
     display: flex;
     align-items: center;
@@ -128,7 +108,6 @@
     cursor: pointer;
     transition: transform 0.3s ease;
     text-decoration: none;
-    margin-left: 0; 
 }
 
 .pricing-arrow:hover {
@@ -138,128 +117,85 @@
 .pricing-arrow svg {
     width: 50px;
     height: 50px;
-    transition: fill 0.3s ease;
 }
 
 .pricing-arrow:hover svg path {
     fill: #222;
 }
 
-/* Мобильная адаптация для блока "Прайс" - ФИНАЛЬНАЯ ВЕРСИЯ */
+/* Мобильная адаптация */
 @media (max-width: 767px) {
-    /* Блок прайсов */
     .pricing-section {
-        background: #FFF;
         padding: 40px 0;
-        min-height: auto;
-        width: 100%;
     }
     
-    
-    /* Главный заголовок "Прайс" - МОБИЛЬНАЯ ВЕРСИЯ */
-    .pricing-section .main-pricing-title {
-        color: #222 !important; /* ЧЁРНЫЙ! */
+    .main-pricing-title {
+        display: block !important;
+        color: #222 !important;
         font-family: 'Unbounded', sans-serif;
         font-size: 36px;
         font-weight: 500;
-        line-height: normal;
         letter-spacing: 1.8px;
-        margin: 0 0 75px 0;
-        text-align: left;
-        padding-left: 0;
-        display: block !important;
+        margin: 0 0 75px;
     }
     
-    /* Блок одной таблицы с прайсом */
     .pricing-block {
         margin-bottom: 60px;
         width: 100%;
     }
     
-    .pricing-block:last-child {
-        margin-bottom: 0;
-    }
-    
-    /* Заголовок конкретной таблицы (Ландшафтные работы / Интерьер) - УДАЛЯЕМ */
     .pricing-title {
-        display: none !important;
+        display: none;
     }
     
-    /* МОБИЛЬНЫЙ ЗАГОЛОВОК ТАБЛИЦЫ (появляется только на мобилках) */
     .mobile-table-title {
-        color: #222 !important; /* ЧЁРНЫЙ цвет! */
+        display: block !important;
+        color: #222 !important;
         font-family: 'Unbounded', sans-serif;
         font-size: 20px;
         font-weight: 500;
-        line-height: normal;
         letter-spacing: 1px;
-        margin: 0 0 75px 0 !important;
-        text-align: left;
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
+        margin: 0 0 75px !important;
     }
     
-    /* Отступ между таблицами */
     .pricing-block + .pricing-block {
         margin-top: 24px;
     }
     
-    /* Таблица - МОБИЛЬНАЯ КОМПАКТНАЯ ВЕРСИЯ */
     .pricing-table {
-        display: flex;
-        flex-direction: column;
         gap: 8px;
         margin-bottom: 30px;
-        position: relative;
         max-width: 100%;
         margin-left: 0;
         width: 100%;
     }
     
-    /* Шапка таблицы */
     .table-header {
-        display: flex;
-        align-items: center;
         padding-bottom: 38px;
         width: 100%;
     }
     
-    /* Строка таблицы */
     .table-row {
-        display: flex;
-        align-items: center;
         padding: 4px 0;
-        border-bottom: 3px solid black;
         min-height: 32px;
     }
     
-    /* Ячейка таблицы - МОБИЛЬНАЯ ВЕРСИЯ */
     .table-cell {
         color: #2B2B2B;
-        font-family: 'Unbounded', sans-serif;
         font-size: 10px;
-        font-weight: 500;
         line-height: 1.3;
-        flex: 1;
         min-height: 18px;
-        display: flex;
-        align-items: center;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
     
-    /* Заголовочная ячейка */
     .header-cell {
-        font-weight: 500;
         font-size: 11px;
         color: #2B2B2B;
-        text-align: left !important; /* ВЫРАВНИВАНИЕ ПО ЛЕВОМУ КРАЮ */
-        white-space: nowrap !important; /* ЗАПРЕЩАЕМ ПЕРЕНОС СЛОВ */
-        overflow: visible !important;
+        text-align: left;
+        white-space: nowrap;
     }
     
-    /* Первая колонка шире */
     .table-row .table-cell:nth-child(1),
     .table-header .header-cell:nth-child(1) {
         flex: 3;
@@ -272,65 +208,44 @@
     .table-header .header-cell:nth-child(3) {
         flex: 1;
         max-width: 20%;
-        text-align: left !important; /* МЕНЯЕМ center НА left */
-        white-space: nowrap !important; /* ЗАПРЕЩАЕМ ПЕРЕНОС */
+        text-align: left;
+        white-space: nowrap;
     }
     
-    /* Футер под таблицей - СКРЫВАЕМ НА МОБИЛКАХ */
     .pricing-footer {
-        display: none !important;
+        display: none;
+    }
+    
+    .pricing-section .section-title {
+        display: none;
     }
 }
 
-/* ====== ДЕСКТОПНАЯ ВЕРСИЯ ====== */
+/* Десктопная адаптация */
 @media (min-width: 768px) {
-    /* Скрываем мобильные заголовки */
     .mobile-table-title {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        font-size: 0 !important;
-        line-height: 0 !important;
+        display: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0;
+        line-height: 0;
     }
     
-    /* Скрываем главный мобильный заголовок "Прайс" */
     .main-pricing-title {
-        display: none !important;
+        display: none;
     }
     
-    /* Показываем десктопные заголовки */
     .pricing-title {
-        display: block !important;
-        color: #222 !important; /* Гарантируем черный цвет */
+        display: block;
+        color: #222;
     }
     
-    /* Показываем футер */
     .pricing-footer {
-        display: flex !important;
-    }
-    
-    /* Главный заголовок на десктопе должен быть виден через .section-title */
-    .pricing-section .section-title {
-        color: #222 !important; /* Черный! */
-        display: block !important;
-    }
-}
-
-/* ДОБАВЬ ЭТОТ CSS В КОНЕЦ ФАЙЛА - ОН ПЕРЕБИВАЕТ ВСЕ ДРУГИЕ СТИЛИ */
-.main-pricing-title {
-    display: none;
-}
-
-@media (max-width: 767px) {
-    .main-pricing-title {
-        display: block !important;
-        color: #222 !important;
+        display: flex;
     }
     
     .pricing-section .section-title {
-        display: none !important;
+        display: block;
+        color: #222;
     }
 }

@@ -1,3 +1,4 @@
+/* Стили всего сайта */
 @import url('fonts.css');
 :root {
     --text-color: #E3E3E3;
@@ -8,11 +9,9 @@
     
 }
 
-/* СБРОС И БАЗА */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 16px; scroll-behavior: smooth; }
 
-/* ОСНОВНЫЕ СТИЛИ ВСЕГО САЙТА */
 body {
     font-family: var(--font-primary);
     font-weight: 400;
@@ -22,16 +21,14 @@ body {
 }
 
 .container {
-  max-width: 1400px; /* Выберите одну максимальную ширину */
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px; /* Единые отступы */
+  padding: 0 20px;
 }
 
-/* ОБЩИЕ ТЕГИ (для ВСЕГО сайта) */
 h1 { font-size: var(--h1-size); font-weight: 700; }
 h2 { font-size: var(--h2-size); font-weight: 700; }
 p { font-size: var(--p-size); }
 
-/* АДАПТИВНОСТЬ */
 
 

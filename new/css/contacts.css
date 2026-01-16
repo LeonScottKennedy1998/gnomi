@@ -1,25 +1,20 @@
-/* Блок контактов */
+/* Десктоп */
 .contacts-section {
     background: #D9D9D9;
-    padding: 150px 0 78px 0;
+    padding: 150px 0 78px;
     min-height: 686px;
-    width: 100%;
 }
-
 
 .contacts-title {
     color: #2B2B2B;
     font-family: 'Unbounded', sans-serif;
     font-size: 36px;
     font-weight: 500;
-    line-height: normal;
     letter-spacing: 1.8px;
-    margin: 0 0 100px 0;
-    text-align: left;
-  padding-left: 20%;
+    margin: 0 0 100px;
+    padding-left: 20%;
 }
 
-/* Основной контент - две колонки */
 .contacts-content {
     display: flex;
     justify-content: space-around;
@@ -27,18 +22,15 @@
     align-items: flex-start;
 }
 
-/* Левая часть: логотип и контакты */
 .contacts-left {
     display: flex;
     gap: 30px;
     align-items: flex-start;
 }
 
-/* Логотип */
 .contacts-logo {
     width: 200px;
     height: 240px;
-    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,7 +42,6 @@
     object-fit: contain;
 }
 
-/* Контакты (телефон, почта, адрес) */
 .contacts-info {
     display: flex;
     flex-direction: column;
@@ -58,62 +49,49 @@
     margin-top: 20px;
 }
 
-/* Один контактный пункт */
 .contact-item {
     display: flex;
     align-items: center;
     gap: 15px;
-    text-decoration: none; /* Убираем подчёркивание */
-    color: inherit; /* Наследуем цвет текста */
+    text-decoration: none;
+    color: inherit;
     transition: all 0.3s ease;
     padding: 8px 12px;
     border-radius: 8px;
 }
 
-
-
-/* Иконка контакта */
 .contact-icon {
     width: 40px;
     height: 40px;
     flex-shrink: 0;
 }
 
-/* Текст контакта */
 .contact-text {
     color: #2B2B2B;
     font-family: 'Unbounded', sans-serif;
     font-size: 16px;
     font-weight: 500;
-    line-height: normal;
     margin: 0;
-    user-select: text !important;
-    -webkit-user-select: text !important;
-    -moz-user-select: text !important;
-    -ms-user-select: text !important;
-    
-    /* Убираем стандартное поведение ссылок */
-    pointer-events: auto !important;
-    cursor: text !important;
+    user-select: text;
+    -webkit-user-select: text;
+    pointer-events: auto;
+    cursor: text;
 }
 
-/* Правая часть: О компании */
 .contacts-right {
     flex: 0 0 526px;
     padding-top: 20px;
 }
 
-/* Заголовок "О компании" */
 .about-title {
     color: #2B2B2B;
     font-family: 'Unbounded', sans-serif;
     font-size: 24px;
     font-weight: 500;
-    line-height: 120%; /* 28.8px */
-    margin: 0 0 30px 0;
+    line-height: 120%;
+    margin: 0 0 30px;
 }
 
-/* Описание компании */
 .about-description {
     color: #2B2B2B;
     font-family: 'Unbounded', sans-serif;
@@ -125,60 +103,43 @@
     margin: 0;
 }
 
-/* Мобильная адаптация для блока "Свяжитесь с нами" - ФИНАЛЬНАЯ С ОТСТУПОМ 18px */
+/* Мобильная адаптация */
 @media (max-width: 767px) {
-    /* Блок контактов */
     .contacts-section {
-        background: #D9D9D9;
         padding: 40px 0;
         min-height: auto;
-        width: 100%;
-        overflow-x: hidden;
     }
     
-
-    
-    /* Заголовок - МОБИЛЬНАЯ ВЕРСИЯ */
     .contacts-title {
-        color: #2B2B2B;
-        font-family: 'Unbounded', sans-serif;
         font-size: 36px;
-        font-weight: 500;
-        line-height: normal;
         letter-spacing: 1.8px;
-        margin: 0 0 40px 0;
-        text-align: left;
+        margin: 0 0 40px;
         padding-left: 0;
         word-wrap: break-word;
-        overflow-wrap: break-word;
         width: 100%;
     }
     
-    /* Основной контент */
     .contacts-content {
-        display: flex;
         flex-direction: column;
-        gap: 0; /* УБИРАЕМ GAP - будет точечный margin */
+        gap: 0;
         align-items: flex-start;
         width: 100%;
     }
     
-    /* ===== БЛОК ЛОГО + О КОМПАНИИ ===== */
     .company-info-block {
         display: flex;
         gap: 15px;
         align-items: stretch;
         width: 100%;
-        margin-bottom: 18px !important; /* ТОЧНО 18px ДО КОНТАКТОВ */
+        margin-bottom: 18px;
     }
     
-    /* Логотип */
     .company-info-block .contacts-logo {
         width: 156px;
         min-width: 156px;
         background: transparent;
         display: flex;
-        align-items: center; /* Центрируем по вертикали */
+        align-items: center;
         justify-content: center;
         flex-shrink: 0;
     }
@@ -191,7 +152,6 @@
         object-fit: contain;
     }
     
-    /* Блок "О компании" */
     .company-text-block {
         flex: 1;
         display: flex;
@@ -200,22 +160,15 @@
         width: 100%;
     }
     
-    /* Заголовок "О компании" */
     .company-text-block .about-title {
-        color: #2B2B2B;
-        font-family: 'Unbounded', sans-serif;
         font-size: 20px;
         font-weight: 500;
-        line-height: normal;
         letter-spacing: 1px;
-        margin: 0 0 10px 0;
+        margin: 0 0 10px;
         white-space: nowrap;
     }
     
-    /* Описание компании */
     .company-text-block .about-description {
-        color: #2B2B2B;
-        font-family: 'Unbounded', sans-serif;
         font-size: 10px;
         font-weight: 500;
         line-height: 1.4;
@@ -225,23 +178,19 @@
         height: auto;
     }
     
-    /* ===== КОНТАКТНЫЕ ДАННЫЕ ===== */
     .contacts-left {
         width: 100%;
         display: block;
     }
     
-    /* Контакты (телефон, почта, адрес) */
     .contacts-info {
-        display: flex;
         flex-direction: column;
         gap: 20px;
         margin-top: 0;
         width: 100%;
-        padding-top: 0; /* Убираем лишние отступы */
+        padding-top: 0;
     }
     
-    /* Один контактный пункт */
     .contact-item {
         display: flex;
         align-items: center;
@@ -252,7 +201,6 @@
         width: 100%;
     }
     
-    /* Иконка контакта */
     .contact-icon {
         width: 50px;
         height: 50px;
@@ -261,13 +209,7 @@
         flex-shrink: 0;
     }
     
-    /* Текст контакта */
     .contact-text {
-        color: #2B2B2B;
-        font-family: 'Unbounded', sans-serif;
-        font-weight: 500;
-        line-height: normal;
-        margin: 0;
         word-wrap: break-word;
         overflow-wrap: break-word;
         word-break: break-all;
@@ -275,44 +217,29 @@
         min-width: 0;
     }
     
-    /* Телефон - всегда 20px */
-    .contact-item[href^="tel:"] .contact-text {
-        font-size: 20px;
-    }
-    
-    /* Email - адаптивный размер */
-    .contact-item[href^="mailto:"] .contact-text {
-        font-size: 20px;
-        word-break: break-all;
-    }
-    
+    .contact-item[href^="tel:"] .contact-text,
+    .contact-item[href^="mailto:"] .contact-text,
     .contact-item[href*="t.me"] .contact-text,
-.contact-item[href*="telegram.me"] .contact-text {
-    font-size: 20px; /* Тот же размер что и у email */
-    word-break: break-all;
-}
-    /* Адрес - адаптивный размер */
+    .contact-item[href*="telegram.me"] .contact-text,
     .contact-item[href*="maps.google.com"] .contact-text {
         font-size: 20px;
         line-height: 1.2;
     }
     
-    /* Правая часть (О компании) на мобилках скрываем */
     .contacts-right {
-        display: none !important;
+        display: none;
     }
     
-    /* Левое лого на десктопе скрываем */
     .contacts-left .contacts-logo.desktop-only {
-        display: none !important;
+        display: none;
     }
 }
 
-/* Для очень узких экранов (меньше 361px) */
+/* Responsive-адаптация */
 @media (max-width: 360px) {
     .company-info-block {
         gap: 12px;
-        margin-bottom: 18px !important; /* Сохраняем 18px */
+        margin-bottom: 18px;
     }
     
     .company-info-block .contacts-logo {
@@ -340,26 +267,21 @@
         gap: 18px;
     }
     
+    .contact-item[href^="tel:"] .contact-text,
     .contact-item[href^="mailto:"] .contact-text,
+    .contact-item[href*="t.me"] .contact-text,
     .contact-item[href*="maps.google.com"] .contact-text {
-        font-size: 14px;
-    }
-    
-    .contact-item[href^="tel:"] .contact-text {
         font-size: 18px;
     }
 }
 
-/* Для iPhone 12/13 (390px - 414px) */
 @media (min-width: 390px) and (max-width: 414px) {
     .company-info-block {
         gap: 18px;
-        margin-bottom: 18px !important;
     }
     
     .company-info-block .contacts-logo {
         width: 156px;
-        min-width: 156px;
     }
     
     .company-text-block .about-title {
@@ -369,68 +291,37 @@
     .company-text-block .about-description {
         font-size: 10px;
     }
-    
-    .contact-item[href^="mailto:"] .contact-text,
-    .contact-item[href*="maps.google.com"] .contact-text {
-        font-size: 17px;
-    }
 }
 
-/* Для iPhone 14/Plus (414px - 430px) */
 @media (min-width: 414px) and (max-width: 430px) {
-    .company-info-block {
-        margin-bottom: 18px !important;
-    }
-    
     .contact-item[href^="mailto:"] .contact-text,
     .contact-item[href*="maps.google.com"] .contact-text {
         font-size: 18px;
     }
 }
 
-/* Для крупных телефонов (430px - 767px) */
 @media (min-width: 430px) and (max-width: 767px) {
     .company-info-block {
         gap: 20px;
-        margin-bottom: 18px !important;
     }
     
     .company-info-block .contacts-logo {
         width: 160px;
     }
-    
-    .contact-item[href^="mailto:"] .contact-text,
-    .contact-item[href*="maps.google.com"] .contact-text {
-        font-size: 19px;
-    }
 }
 
-/* ОБЩИЕ ИСПРАВЛЕНИЯ */
-@media (max-width: 767px) {
-    html, body {
-        overflow-x: hidden;
-        width: 100%;
-    }
-    
-    .container {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-    }
-}
-
-/* Для планшетов и десктопа */
+/* Десктоп адаптация */
 @media (min-width: 768px) {
     .company-info-block {
-        display: none !important;
+        display: none;
     }
     
     .contacts-left .contacts-logo.desktop-only {
-        display: flex !important;
+        display: flex;
     }
 }
 
-/* Классы для показа/скрытия */
+/* Доп */
 .mobile-only {
     display: none;
 }
@@ -441,20 +332,20 @@
 
 @media (max-width: 767px) {
     .mobile-only {
-        display: flex !important;
+        display: flex;
     }
     
     .desktop-only {
-        display: none !important;
+        display: none;
     }
 }
 
 @media (min-width: 768px) {
     .mobile-only {
-        display: none !important;
+        display: none;
     }
     
     .desktop-only {
-        display: block !important;
+        display: block;
     }
 }

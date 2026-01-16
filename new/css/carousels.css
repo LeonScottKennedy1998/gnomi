@@ -1,3 +1,4 @@
+/* Десктоп */
 .carousels-section {
     background: #222;
     padding: 100px 0;
@@ -6,11 +7,8 @@
     overflow: hidden;
 }
 
-
-/* Блок одной карусели (заголовок + карусель) */
 .carousel-block {
     position: relative;
-    /* Убираем margin-bottom, используем padding */
 }
 
 .carousel-block:last-child {
@@ -23,39 +21,30 @@
     font-size: 24px;
     font-weight: 500;
     line-height: 120%;
-    margin: 60px 0 50px 0;
+    margin: 60px 0 50px;
     text-align: left;
-  padding-left: 20%;
+    padding-left: 20%;
 }
 
-/* Контейнер для карусели - ФИКС ОБРЕЗАНИЯ */
 .carousel-container {
     width: 1956px;
-    height: 306px;
+    height: 386px;
     position: relative;
-    overflow: visible; /* Меняем hidden на visible */
-    margin: 0 auto;
-    
-    /* ДОБАВЛЯЕМ ПАДДИНГ для места при увеличении */
-    padding: 40px 0; /* 40px сверху и снизу */
-    height: calc(306px + 80px); /* Высота картинки + паддинги */
-    
-    /* ИЛИ используем margin вместо padding для заголовка */
-    margin-top: 40px; /* Это вместо margin-bottom у заголовка */
+    overflow: visible;
+    margin: 40px auto 0;
+    padding: 40px 0;
 }
 
-/* Дорожка карусели (бесконечная) */
 .carousel-track {
     display: flex;
-    gap: 24px; /* Равное расстояние между картинками */
-    height: 306px; /* Фиксированная высота дорожки */
+    gap: 24px;
+    height: 306px;
     position: absolute;
     left: 0;
+    top: 40px;
     will-change: transform;
-    top: 40px; /* Компенсируем padding контейнера */
 }
 
-/* Одна картинка в карусели - ИСПРАВЛЕНО СКРУГЛЕНИЕ */
 .carousel-image {
     width: 306px;
     height: 306px;
@@ -64,9 +53,7 @@
     flex-shrink: 0;
     overflow: hidden;
     position: relative;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* Гарантируем, что увеличение будет относительно центра */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center center;
 }
 
@@ -78,156 +65,69 @@
     transition: transform 0.4s ease;
 }
 
-/* Эффект при наведении - увеличение БЕЗ ОБРЕЗАНИЯ */
 .carousel-image:hover {
     transform: scale(1.08);
-    border-radius: 10px;
-    z-index: 100; /* Поднимаем над другими картинками */
+    z-index: 100;
 }
 
 .carousel-image:hover img {
     transform: scale(1.1);
-    border-radius: 10px;
 }
 
-/* Мобильная адаптация для каруселей - ФИКСИРОВАННЫЙ РАЗМЕР 306x306 */
+/* Мобильная адаптация */
 @media (max-width: 767px) {
-    /* Секция каруселей */
     .carousels-section {
         padding: 60px 0;
         min-height: auto;
-        background: #222;
     }
     
-    /* Блок одной карусели */
     .carousel-block {
-        position: relative;
-        margin-bottom: 94px; /* Отступ снизу 94px */
+        margin-bottom: 94px;
     }
     
-    .carousel-block:last-child {
-        margin-bottom: 0;
-    }
-    
-    /* Заголовок карусели - МОБИЛЬНАЯ ВЕРСИЯ */
     .carousel-title {
         width: 351px;
-        color: #E2E2E2;
-        font-family: 'Unbounded', sans-serif;
         font-size: 20px;
-        font-weight: 500;
-        line-height: normal;
         letter-spacing: 1px;
-        margin: 0 0 39px 0; /* Отступ сверху 39px */
-        text-align: left;
+        margin: 0 0 39px;
         padding-left: 0;
-        white-space: wrap;
+        white-space: normal;
     }
     
-    /* Контейнер для карусели - МОБИЛЬНАЯ ВЕРСИЯ */
     .carousel-container {
         width: 100%;
-        height: auto;
-        position: relative;
-        overflow: hidden; /* На мобилке hidden, так как одна карточка */
+        height: 306px;
         margin: 0;
         padding: 0;
-        height: 306px; /* Фиксированная высота под карточку 306px */
-        touch-action: pan-y; /* разрешаем только вертикальный */
+        overflow: hidden;
+        touch-action: pan-y;
     }
     
-    /* Дорожка карусели - для мобилок */
     .carousel-track {
-        display: flex;
-        gap: 24px; /* Сохраняем отступ как на десктопе */
-        height: 306px; /* Высота карточки */
         position: relative;
         top: 0;
         transition: transform 0.3s ease;
-        will-change: transform;
     }
     
-    /* Одна картинка в карусели - ФИКСИРОВАННЫЙ РАЗМЕР 306x306 */
     .carousel-image {
-        width: 306px !important; /* Фиксированная ширина */
+        width: 306px !important;
         min-width: 306px;
-        max-width: 306px;
-        height: 306px !important; /* Фиксированная высота */
-        border-radius: 10px;
-        background: #D9D9D9;
-        flex-shrink: 0;
-        overflow: hidden;
-        position: relative;
-        transition: transform 0.3s ease;
+        height: 306px !important;
     }
     
-    .carousel-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-    
-    /* На мобилке убираем hover-эффекты или делаем их менее агрессивными */
     .carousel-image:hover {
         transform: scale(1.03);
         z-index: 10;
     }
-    
-    /* Убираем бесконечную анимацию на мобилках */
-    .carousel-track {
-        animation: none !important;
-    }
-    
-    /* Стрелки для листания на мобилке */
-    .carousel-nav {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        margin-top: 20px;
-        width: 100%;
-    }
-    
-    .carousel-nav-btn {
-        background: transparent;
-        border: none;
-        padding: 0;
-        cursor: pointer;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
-    }
-    
-    .carousel-nav-btn:hover {
-        opacity: 1;
-    }
-    
-    .carousel-nav-btn svg {
-        width: 40px;
-        height: 40px;
-        fill: #E2E2E2;
-    }
-    
-    .carousel-nav-btn:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-    }
 }
 
-/* Для экранов уже 306px */
 @media (max-width: 330px) {
     .carousel-container {
-        margin: 0 -15px; /* Немного выходим за границы чтобы показать карточку */
+        margin: 0 -15px;
         padding: 0 15px;
-        touch-action: pan-y;
     }
 }
 
-/* Для экранов 331px - 375px */
 @media (min-width: 331px) and (max-width: 375px) {
     .carousel-title {
         width: 100%;
@@ -235,14 +135,12 @@
     }
 }
 
-/* Для экранов 376px - 414px */
 @media (min-width: 376px) and (max-width: 414px) {
     .carousel-title {
         width: 351px;
     }
 }
 
-/* Для экранов 415px - 767px */
 @media (min-width: 415px) and (max-width: 767px) {
     .carousel-title {
         width: 100%;

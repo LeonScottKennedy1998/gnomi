@@ -1,18 +1,16 @@
+/* Декстоп */
 .header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
-    padding: 0;
-    background-color: transparent;
+    background: transparent;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
                 opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateY(0);
     opacity: 1;
-    pointer-events: auto;
 }
-
 
 .header::after {
     content: '';
@@ -20,18 +18,16 @@
     bottom: 0;
     left: 62%;
     transform: translateX(-50%);
-    width: 50%; /* Процент от ширины экрана */
-    max-width: 1200px; /* Ограничиваем максимальную ширину */
+    width: 50%;
+    max-width: 1200px;
     height: 1px;
     background: #E3E3E3;
 }
 
-
-
 .nav {
     width: 100%;
     max-width: 1200px;
-    height: 70px; /* Уменьшили высоту */
+    height: 70px;
     margin: 0 auto;
     display: flex;
     justify-content: flex-end;
@@ -47,18 +43,12 @@
     font-family: 'Unbounded', sans-serif;
     font-size: 16px;
     font-weight: 500;
-    line-height: normal;
-    position: relative;
     padding: 6px 12px;
+    position: relative;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
     white-space: nowrap;
 }
 
-/* Эффект при наведении */
 .nav-link::before {
     content: '';
     position: absolute;
@@ -67,7 +57,7 @@
     transform: translate(-50%, -50%);
     width: calc(100% + 12px);
     height: calc(100% + 6px);
-    background-color: rgba(227, 227, 227, 0.08);
+    background: rgba(227, 227, 227, 0.08);
     backdrop-filter: blur(8px);
     border-radius: 4px;
     opacity: 0;
@@ -79,27 +69,25 @@
     opacity: 1;
 }
 
-/* Активный пункт меню */
 .nav-link.active {
-    font-weight: 600; /* Сделали чуть меньше жирности */
+    font-weight: 600;
 }
 
 .nav-link.active::before {
     opacity: 1;
-    background-color: rgba(227, 227, 227, 0.1);
+    background: rgba(227, 227, 227, 0.1);
 }
 
+/* Мобильная адаптация */
 @media (max-width: 480px) {
-
     .header {
         position: absolute;
-        background: transparent;
     }
-
+    
     .header::after {
         display: none;
     }
-
+    
     .nav {
         height: auto;
         flex-direction: column;
@@ -108,50 +96,37 @@
         padding: 20px;
         padding-top: 24px;
     }
-
+    
     .nav-link {
         font-size: 14px;
         padding: 4px 0;
     }
-
+    
     .nav-link::before {
         display: none;
     }
 }
 
-
+/* Планшетная адаптация */
 @media (min-width: 481px) and (max-width: 768px) {
-
     .nav {
         gap: 24px;
         padding-right: 6%;
     }
-
+    
     .nav-link {
         font-size: 15px;
     }
 }
 
-
+/* Десктопная адаптация */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .hero {
-        min-height: 90vh;
+    .nav {
+        gap: 36px;
     }
-
-    .hero .container {
-        padding-left: 7%;
-        padding-top: 40vh;
-    }
-
-    .hero-title {
-        font-size: 26px;
-        max-width: 420px;
-    }
-
 }
 
 @media (min-width: 1025px) and (max-width: 1280px) {
-
     .nav {
         gap: 36px;
     }

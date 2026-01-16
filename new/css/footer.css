@@ -1,4 +1,4 @@
-/* Футер */
+/* Десктоп */
 .footer {
     background: #D9D9D9;
     padding: 30px 0;
@@ -6,97 +6,71 @@
 
 .footer-content {
     display: flex;
-    justify-content: flex-start; /* НАЧИНАЕТСЯ С ЛЕВОГО КРАЯ */
+    justify-content: flex-start;
     align-items: center;
+    max-width: 1200px;
     margin: 0 auto;
-    max-width: 1200px; /* Ограничиваем максимальную ширину */
 }
 
 .footer-text {
     color: #2B2B2B;
     font-family: 'Unbounded', sans-serif;
-    font-size: 12px; /* 12px как в ТЗ */
+    font-size: 12px;
     font-weight: 400;
-    line-height: normal;
     margin: 0;
-    text-align: left; /* ПО ЛЕВОМУ КРАЮ, НО МОЖНО ПОМЕНЯТЬ НА center */
-    
-    /* Если нужно чтобы начинался с того же уровня что заголовки (с 20% отступа) */
-    padding-left: 20%; /* ДОБАВЬ ЕСЛИ НУЖНО ТОЧНО КАК У ЗАГОЛОВКОВ */
+    text-align: left;
 }
 
-/* Если нужно точное выравнивание как у заголовков (.projects-title имеет padding-left: 20%) */
+/* Десктопная адаптация */
 @media (min-width: 1025px) {
     .footer-text {
-        padding-left: 20%; /* ТОЧНО КАК У ЗАГОЛОВКОВ НА ДЕСКТОПЕ */
+        padding-left: 20%;
     }
 }
 
-/* АДАПТИВНОСТЬ */
-
-/* Планшеты (768px - 1024px) */
+/* Планшетная адаптация */
 @media (max-width: 1024px) and (min-width: 769px) {
-    
-    .footer-content {
-        justify-content: flex-start; /* Или center если нужно по центру */
-    }
-    
     .footer-text {
-        font-size: 12px; /* Оставляем 12px */
-        text-align: left; /* Или center */
-        padding-left: 10%; /* Уменьшаем отступ для планшетов */
+        padding-left: 10%;
     }
 }
 
-/* Мобильные устройства (до 768px) */
+/* Мобильная адаптация */
 @media (max-width: 768px) {
     .footer {
-        padding: 20px 0; /* Меньше отступы сверху/снизу */
+        padding: 20px 0;
     }
     
-    
     .footer-content {
-        justify-content: center; /* ЦЕНТРИРУЕМ НА МОБИЛКАХ */
+        justify-content: center;
         text-align: center;
     }
     
     .footer-text {
-        font-size: 12px; /* 12px КАК В ТЗ, не уменьшаем! */
-        text-align: center; /* ПО ЦЕНТРУ НА МОБИЛКАХ */
-        padding-left: 0; /* Убираем левый отступ */
-        width: 100%; /* Занимает всю ширину */
-        
-        padding: 0 10px;
+        text-align: center;
+        padding: 0 20px;
+        width: 100%;
     }
 }
 
-/* Очень маленькие экраны (до 480px) */
 @media (max-width: 480px) {
     .footer {
         padding: 15px 0;
     }
-
     
     .footer-text {
-        font-size: 12px; /* Оставляем 12px */
-        text-align: center;
-        padding: 0 10px; /* Отступы 10px от краёв текста */
-
+        padding: 0 10px;
     }
 }
 
-/* Для экранов 481px - 600px */
 @media (min-width: 481px) and (max-width: 600px) {
     .footer-text {
-        font-size: 12px;
         padding: 0 15px;
     }
 }
 
-/* Для экранов 601px - 768px */
 @media (min-width: 601px) and (max-width: 768px) {
     .footer-text {
-        font-size: 12px;
         padding: 0 20px;
     }
 }
