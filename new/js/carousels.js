@@ -91,10 +91,12 @@ const preloadedImagesCache = {};
     });
 })();
 
-// ОСНОВНОЙ КОД С МОБИЛЬНЫМ СВАЙПОМ
 // ОСНОВНОЙ КОД С БЕСКОНЕЧНОЙ КАРУСЕЛЬЮ
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Карусели: скрипт запущен');
+    
+    // Храним состояние каруселей
+    const carouselsState = new Map();
     
     // Проверка на мобильное устройство
     function isMobile() {
@@ -113,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
         mobile: {
             gap: 24,
             imageWidth: 306,
-            speed: 80, // Медленнее чем на десктопе
+            speed: 80,
             autoPlay: true
         }
     };
@@ -141,6 +143,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Проверяем, была ли уже инициализирована карусель
+    function isCarouselInitialized(track) {
+        return carouselsState.has(track) && carouselsState.get(track).initialized;
+    }
+    
     // ИНИЦИАЛИЗАЦИЯ ВСЕХ КАРУСЕЛЕЙ
     function initCarousels() {
         const carousels = document.querySelectorAll('.carousel-track');
@@ -148,11 +155,20 @@ document.addEventListener('DOMContentLoaded', function() {
         carousels.forEach((track, index) => {
             const carouselId = track.dataset.carousel || (index + 1);
             
+            // Проверяем, не была ли уже инициализирована эта карусель
+            if (isCarouselInitialized(track)) {
+                console.log(`Карусель ${carouselId} уже инициализирована, пропускаем`);
+                return;
+            }
+            
             if (isMobile()) {
                 initMobileCarousel(track, carouselId);
             } else {
                 initDesktopCarousel(track, carouselId);
             }
+            
+            // Помечаем карусель как инициализированную
+            carouselsState.set(track, { initialized: true, carouselId: carouselId });
         });
         
         disableHoverOnMobile();
@@ -162,14 +178,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function initDesktopCarousel(track, carouselId) {
         const images = carouselImages[carouselId] || getDefaultImages(carouselId);
         
-        track.innerHTML = '';
-        const totalCopies = 3;
-        
-        for (let copy = 0; copy < totalCopies; copy++) {
-            images.forEach((src, imgIndex) => {
-                const imgElement = createImageElement(src, carouselId, imgIndex + 1);
-                track.appendChild(imgElement);
-            });
+        // Очищаем только если еще не было картинок
+        if (track.children.length === 0) {
+            track.innerHTML = '';
+            const totalCopies = 3;
+            
+            for (let copy = 0; copy < totalCopies; copy++) {
+                images.forEach((src, imgIndex) => {
+                    const imgElement = createImageElement(src, carouselId, imgIndex + 1);
+                    track.appendChild(imgElement);
+                });
+            }
         }
         
         const checkAndStart = () => {
@@ -181,14 +200,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const firstSetImages = Array.from(track.children).slice(0, images.length);
-            const allLoaded = firstSetImages.every(el => {
-                const img = el.querySelector('img');
-                return img && img.complete && img.naturalHeight > 0;
-            });
+            // Проверяем загрузку только первый раз
+            if (!carouselsState.get(track)?.imagesLoaded) {
+                const firstSetImages = Array.from(track.children).slice(0, images.length);
+                const allLoaded = firstSetImages.every(el => {
+                    const img = el.querySelector('img');
+                    return img && img.complete && img.naturalHeight > 0;
+                });
+                
+                if (!allLoaded) {
+                    setTimeout(checkAndStart, 50);
+                    return;
+                }
+                
+                // Помечаем что картинки загружены
+                const state = carouselsState.get(track);
+                carouselsState.set(track, { ...state, imagesLoaded: true });
+            }
             
-            if (!allLoaded) {
-                setTimeout(checkAndStart, 50);
+            // Если уже есть анимация, не создаем новую
+            if (carouselsState.get(track)?.animationRunning) {
                 return;
             }
             
@@ -213,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
             track.style.transition = 'none';
             track.style.willChange = 'transform';
             
-            if (settings.desktop.autoPlay) {
+            if (settings.desktop.autoPlay && !carouselsState.get(track)?.animationRunning) {
                 startDesktopInfiniteScroll(track, images.length, singleSetWidth);
             }
             
@@ -226,6 +257,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function startDesktopInfiniteScroll(track, imagesCount, singleSetWidth) {
+        // Если анимация уже запущена, не создаем новую
+        if (carouselsState.get(track)?.animationRunning) {
+            return;
+        }
+        
         let position = 0;
         let animationId = null;
         let isScrolling = true;
@@ -234,7 +270,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         track.style.transition = 'none';
         track.style.willChange = 'transform';
-        track.style.transform = 'translateX(0px)';
+        
+        // Если уже есть позиция из состояния, восстанавливаем ее
+        const savedState = carouselsState.get(track);
+        if (savedState?.position !== undefined) {
+            position = savedState.position;
+        }
+        
+        track.style.transform = `translateX(${position}px)`;
         track.style.backfaceVisibility = 'hidden';
         track.style.perspective = '1000px';
         
@@ -256,6 +299,27 @@ document.addEventListener('DOMContentLoaded', function() {
         
         animate();
         
+        // Сохраняем состояние анимации
+        const state = carouselsState.get(track);
+        carouselsState.set(track, { 
+            ...state, 
+            animationRunning: true,
+            position: position,
+            animationId: animationId,
+            stopAnimation: () => {
+                isScrolling = false;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                carouselsState.set(track, { 
+                    ...carouselsState.get(track), 
+                    animationRunning: false,
+                    position: position 
+                });
+            }
+        });
+        
         // На мобилках убираем остановку при наведении
         if (!isMobile()) {
             track.addEventListener('mouseenter', () => {
@@ -264,6 +328,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     cancelAnimationFrame(animationId);
                     animationId = null;
                 }
+                carouselsState.set(track, { 
+                    ...carouselsState.get(track), 
+                    animationRunning: false,
+                    position: position 
+                });
             });
             
             track.addEventListener('mouseleave', () => {
@@ -271,6 +340,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 track.style.transition = 'none';
                 if (!animationId) {
                     animate();
+                    carouselsState.set(track, { 
+                        ...carouselsState.get(track), 
+                        animationRunning: true 
+                    });
                 }
             });
         }
@@ -281,6 +354,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 cancelAnimationFrame(animationId);
                 animationId = null;
             }
+            carouselsState.set(track, { 
+                ...carouselsState.get(track), 
+                animationRunning: false,
+                position: position 
+            });
         };
     }
     
@@ -288,20 +366,28 @@ document.addEventListener('DOMContentLoaded', function() {
     function initMobileCarousel(track, carouselId) {
         const images = carouselImages[carouselId] || getDefaultImages(carouselId);
         
-        track.innerHTML = '';
-        const totalCopies = 3; // Три копии для бесконечного эффекта
-        
-        for (let copy = 0; copy < totalCopies; copy++) {
-            images.forEach((src, imgIndex) => {
-                const imgElement = createImageElement(src, carouselId, imgIndex + 1);
-                track.appendChild(imgElement);
-            });
+        // Очищаем только если еще не было картинок
+        if (track.children.length === 0) {
+            track.innerHTML = '';
+            const totalCopies = 3; // Три копии для бесконечного эффекта
+            
+            for (let copy = 0; copy < totalCopies; copy++) {
+                images.forEach((src, imgIndex) => {
+                    const imgElement = createImageElement(src, carouselId, imgIndex + 1);
+                    track.appendChild(imgElement);
+                });
+            }
         }
         
         startMobileInfiniteScroll(track, images.length);
     }
     
     function startMobileInfiniteScroll(track, imagesCount) {
+        // Если анимация уже запущена, не создаем новую
+        if (carouselsState.get(track)?.mobileAnimationRunning) {
+            return;
+        }
+        
         // Рассчитываем ширину одного набора картинок
         const checkAndStart = () => {
             const firstImage = track.querySelector('.carousel-image');
@@ -312,15 +398,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const firstSetImages = Array.from(track.children).slice(0, imagesCount);
-            const allLoaded = firstSetImages.every(el => {
-                const img = el.querySelector('img');
-                return img && img.complete && img.naturalHeight > 0;
-            });
-            
-            if (!allLoaded) {
-                setTimeout(checkAndStart, 50);
-                return;
+            // Проверяем загрузку только первый раз
+            if (!carouselsState.get(track)?.mobileImagesLoaded) {
+                const firstSetImages = Array.from(track.children).slice(0, imagesCount);
+                const allLoaded = firstSetImages.every(el => {
+                    const img = el.querySelector('img');
+                    return img && img.complete && img.naturalHeight > 0;
+                });
+                
+                if (!allLoaded) {
+                    setTimeout(checkAndStart, 50);
+                    return;
+                }
+                
+                // Помечаем что картинки загружены
+                const state = carouselsState.get(track);
+                carouselsState.set(track, { ...state, mobileImagesLoaded: true });
             }
             
             const firstRect = firstImage.getBoundingClientRect();
@@ -344,11 +437,17 @@ document.addEventListener('DOMContentLoaded', function() {
             let position = 0;
             let animationId = null;
             const direction = -1;
-            const speed = settings.mobile.speed / 60; // Медленнее чем на десктопе
+            const speed = settings.mobile.speed / 60;
+            
+            // Восстанавливаем позицию из состояния если есть
+            const savedState = carouselsState.get(track);
+            if (savedState?.mobilePosition !== undefined) {
+                position = savedState.mobilePosition;
+            }
             
             track.style.transition = 'none';
             track.style.willChange = 'transform';
-            track.style.transform = 'translateX(0px)';
+            track.style.transform = `translateX(${position}px)`;
             
             function animate() {
                 position += direction * speed;
@@ -364,6 +463,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (settings.mobile.autoPlay) {
                 animate();
+                
+                // Сохраняем состояние анимации
+                const state = carouselsState.get(track);
+                carouselsState.set(track, { 
+                    ...state, 
+                    mobileAnimationRunning: true,
+                    mobilePosition: position,
+                    mobileAnimationId: animationId
+                });
             }
             
             // Сохраняем функцию остановки
@@ -372,6 +480,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     cancelAnimationFrame(animationId);
                     animationId = null;
                 }
+                carouselsState.set(track, { 
+                    ...carouselsState.get(track), 
+                    mobileAnimationRunning: false,
+                    mobilePosition: position 
+                });
             };
             
             console.log(`Мобильная карусель: ${imagesCount} картинок, ширина набора: ${singleSetWidth}px`);
@@ -402,11 +515,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const img = document.createElement('img');
         
-        // Используем кэш предзагрузки
+        // Используем кэш предзагрузки, но сохраняем ссылку на оригинальный Image объект
         if (preloadedImagesCache[carouselId] && preloadedImagesCache[carouselId][index - 1]) {
             const cached = preloadedImagesCache[carouselId][index - 1];
             if (cached.element && cached.loaded) {
+                // Используем оригинальный Image объект из кэша
                 img.src = cached.element.src;
+                // Если изображение уже загружено, сразу показываем его
+                if (cached.element.complete) {
+                    img.style.opacity = '1';
+                }
             } else {
                 img.src = cached.src || src;
             }
@@ -418,13 +536,17 @@ document.addEventListener('DOMContentLoaded', function() {
         img.loading = 'eager';
         img.decoding = 'async';
         
-        // Для плавной загрузки
-        img.style.opacity = '0';
-        img.style.transition = 'opacity 0.3s ease';
-        
-        img.onload = () => {
+        // Для плавной загрузки - только если изображение еще не загружено
+        if (!img.complete) {
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease';
+            
+            img.onload = () => {
+                img.style.opacity = '1';
+            };
+        } else {
             img.style.opacity = '1';
-        };
+        }
         
         img.onerror = () => {
             img.src = `https://via.placeholder.com/306x306/404040/FFFFFF?text=Проект+${index}`;
@@ -444,20 +566,33 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     }
     
-    // ПЕРЕИНИЦИАЛИЗАЦИЯ ПРИ ИЗМЕНЕНИИ РАЗМЕРА
+    // ПЕРЕИНИЦИАЛИЗАЦИЯ ПРИ ИЗМЕНЕНИИ РАЗМЕРА (только если действительно изменился режим)
+    let lastIsMobile = isMobile();
     let resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function() {
-            // Останавливаем все анимации
-            document.querySelectorAll('.carousel-track').forEach(track => {
-                if (track._stopAnimation) {
-                    track._stopAnimation();
-                }
-            });
+            const currentIsMobile = isMobile();
             
-            // Переинициализируем
-            initCarousels();
+            // Переинициализируем только если изменился режим (мобильный/десктопный)
+            if (currentIsMobile !== lastIsMobile) {
+                console.log('Режим изменился, переинициализируем карусели');
+                
+                // Останавливаем все анимации
+                document.querySelectorAll('.carousel-track').forEach(track => {
+                    if (track._stopAnimation) {
+                        track._stopAnimation();
+                    }
+                });
+                
+                // Очищаем состояние
+                carouselsState.clear();
+                
+                // Переинициализируем
+                initCarousels();
+                
+                lastIsMobile = currentIsMobile;
+            }
         }, 250);
     });
     
@@ -483,6 +618,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 height: 100%;
                 object-fit: cover;
                 pointer-events: none;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
             }
             
             /* Для мобилок - отключаем все взаимодействия */
@@ -550,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(style);
     }
     
-    // ЗАПУСК
+    // ЗАПУСК ТОЛЬКО ОДИН РАЗ
     addOptimizationStyles();
     initCarousels();
     
