@@ -1,11 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Services: Initializing...');
-    
-    const serviceItems = document.querySelectorAll('.service-item');
-    const serviceImage = document.getElementById('service-image');
-    const serviceDescription = document.getElementById('service-description');
 
-    const servicesData = {
+    const fallbackServicesData = {
         1: {
             image: 'assets/images/services/1.webp',
             description: 'Планировка, подбор материалов, цветов и мебели — создание гармоничного и функционального пространства'
@@ -39,17 +35,39 @@ document.addEventListener('DOMContentLoaded', () => {
             description: 'Обрезка, удобрение, пересадка и защита растений — регулярное обслуживание вашего участка.'
         }
     };
+
+    let servicesData = fallbackServicesData;
+    let serviceItems = document.querySelectorAll('.service-item');
+    const serviceImage = document.getElementById('service-image');
+    const serviceDescription = document.getElementById('service-description');
+
+    function buildServicesData() {
+        const content = window.__CONTENT__;
+        if (content && Array.isArray(content.services)) {
+            const map = {};
+            content.services.forEach(service => {
+                map[service.id] = {
+                    image: service.image,
+                    description: service.description
+                };
+            });
+            return map;
+        }
+        return fallbackServicesData;
+    }
     
-    (function preloadCriticalImages() {
+    function preloadCriticalImages() {
         console.log('Preloading service images...');
-        
+
         Object.keys(servicesData).slice(0, 3).forEach(key => {
             const img = new Image();
             img.src = servicesData[key].image;
             img.decoding = 'async';
             servicesData[key].preloaded = img;
         });
-    })();
+    }
+
+    preloadCriticalImages();
     
     function selectService(serviceId) {
         serviceItems.forEach(item => {
@@ -78,27 +96,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    serviceItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const serviceId = this.dataset.service;
-            selectService(serviceId);
+    function bindServiceItems() {
+        serviceItems = document.querySelectorAll('.service-item');
+
+        serviceItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const serviceId = this.dataset.service;
+                selectService(serviceId);
+            });
         });
-    });
-    
-    serviceItems.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-            const serviceId = this.dataset.service;
-            if (serviceId && servicesData[serviceId] && !servicesData[serviceId].preloaded) {
-                const img = new Image();
-                img.src = servicesData[serviceId].image;
-                img.decoding = 'async';
-                servicesData[serviceId].preloaded = img;
-            }
+
+        serviceItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                const serviceId = this.dataset.service;
+                if (serviceId && servicesData[serviceId] && !servicesData[serviceId].preloaded) {
+                    const img = new Image();
+                    img.src = servicesData[serviceId].image;
+                    img.decoding = 'async';
+                    servicesData[serviceId].preloaded = img;
+                }
+            });
         });
+    }
+
+    function initServices() {
+        bindServiceItems();
+        selectService(Object.keys(servicesData)[0] || 1);
+    }
+
+    servicesData = buildServicesData();
+    preloadCriticalImages();
+    initServices();
+
+    document.addEventListener('content:loaded', () => {
+        servicesData = buildServicesData();
+        preloadCriticalImages();
+        initServices();
     });
-    
-    selectService(1);
-    
+
     const style = document.createElement('style');
     style.textContent = `
         .service-image, .service-image img, .service-description, .service-item {

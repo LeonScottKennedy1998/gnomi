@@ -1,7 +1,7 @@
 (function optimizeProjectImages() {
     'use strict';
     
-    const criticalImages = [
+    const fallbackCriticalImages = [
         'assets/images/projects/small/project1.webp',
         'assets/images/projects/small/project2.webp',
         'assets/images/projects/large/project1-1.webp',
@@ -11,8 +11,24 @@
         'assets/images/projects/small/project5.webp',
         'assets/images/projects/small/project6.webp'
     ];
+
+    function getCriticalImages() {
+        const content = window.__CONTENT__;
+        if (!content || !Array.isArray(content.projects)) return fallbackCriticalImages;
+
+        const images = [];
+        content.projects.slice(0, 4).forEach((project) => {
+            if (project.smallImage) images.push(project.smallImage);
+            if (Array.isArray(project.featuredImages)) {
+                project.featuredImages.slice(0, 2).forEach((img) => images.push(img));
+            }
+        });
+
+        return images.length ? images : fallbackCriticalImages;
+    }
     
     function preloadCriticalImages() {
+        const criticalImages = getCriticalImages();
         criticalImages.forEach((src, index) => {
             const img = new Image();
             img.fetchPriority = index > 3 ? 'low' : 'high';
@@ -50,6 +66,10 @@
         preloadCriticalImages();
         setupLazyLoading();
     });
+
+    document.addEventListener('content:loaded', () => {
+        preloadCriticalImages();
+    });
     
     if (document.readyState === 'loading') {
         const firstImg = new Image();
@@ -58,7 +78,7 @@
     }
 })();
 
-document.addEventListener('DOMContentLoaded', () => {
+function initProjects() {
     console.log('Projects: Initializing...');
     
     const projectsTrack = document.querySelector('.projects-track');
@@ -67,9 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const featuredCards = document.querySelectorAll('.featured-card');
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
+
+    if (!projectsTrack || projectCards.length === 0) {
+        console.warn('Projects: No project cards found');
+        return;
+    }
     
     let currentPosition = 0;
-    let currentProjectId = 1;
+    let currentProjectId = parseInt(projectCards[0]?.dataset?.projectId || '1', 10) || 1;
     
     const isMobile = () => window.innerWidth <= 767;
     
@@ -86,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const container = document.querySelector('.projects-container');
         const visibleCards = Math.floor((container.clientWidth + 24) / (306 + 24));
-        const totalCards = 6;
+        const totalCards = projectCards.length;
         
         return visibleCards >= totalCards ? 0 : (totalCards - visibleCards) * (306 + 24);
     }
@@ -225,4 +250,21 @@ document.addEventListener('DOMContentLoaded', () => {
     selectProject(currentProjectId);
     
     console.log('Projects: Initialization complete');
+}
+
+let projectsInitialized = false;
+
+function startProjects() {
+    if (projectsInitialized) return;
+    projectsInitialized = true;
+    initProjects();
+}
+
+document.addEventListener('content:loaded', () => {
+    projectsInitialized = false;
+    startProjects();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    startProjects();
 });

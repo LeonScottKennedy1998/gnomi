@@ -1,0 +1,16 @@
+{
+  "name": "gnomgarden",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["server", "admin"],
+  "scripts": {
+    "dev": "concurrently -k \"npm --workspace server run dev\" \"npm --workspace admin run dev\"",
+    "build": "npm --workspace admin run build && npm --workspace server run build",
+    "start": "npm --workspace server run start",
+    "prisma:migrate": "npm --workspace server run prisma:migrate",
+    "seed": "npm --workspace server run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

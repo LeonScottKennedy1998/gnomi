@@ -1,4 +1,4 @@
-const carouselImages = {
+const fallbackCarouselImages = {
     1: Array.from({length: 12}, (_, i) => `assets/images/carousels/landscape-projects/${i+1}.webp`),
     2: Array.from({length: 6}, (_, i) => `assets/images/carousels/landscape-implementation/${i+1}.webp`),
     3: Array.from({length: 8}, (_, i) => `assets/images/carousels/interior-projects/${i+1}.webp`),
@@ -7,21 +7,39 @@ const carouselImages = {
 
 const imageCache = {};
 
-(function preloadImages() {
-    Object.keys(carouselImages).forEach(id => {
-        imageCache[id] = [];
-        const images = carouselImages[id];
-        const toPreload = Math.min(3, images.length);
-        
-        for (let i = 0; i < toPreload; i++) {
-            const img = new Image();
-            img.src = images[i];
-            imageCache[id][i] = { element: img, loaded: true };
-        }
-    });
-})();
+function resolveCarouselImages(id) {
+    const content = window.__CONTENT__;
+    const targetId = String(id);
 
-document.addEventListener('DOMContentLoaded', () => {
+    if (content && Array.isArray(content.carousels)) {
+        const carousel = content.carousels.find(item => String(item.id) === targetId);
+        if (carousel && Array.isArray(carousel.images)) {
+            return carousel.images
+                .slice()
+                .sort((a, b) => (a.order || 0) - (b.order || 0))
+                .map((image, index) => ({
+                    src: image.src,
+                    alt: image.alt || `Изображение ${index + 1}`
+                }));
+        }
+    }
+
+    const fallback = fallbackCarouselImages[id] || [];
+    return fallback.map((src, index) => ({ src, alt: `Изображение ${index + 1}` }));
+}
+
+function preloadImages(id, images) {
+    imageCache[id] = [];
+    const toPreload = Math.min(3, images.length);
+
+    for (let i = 0; i < toPreload; i++) {
+        const img = new Image();
+        img.src = images[i].src;
+        imageCache[id][i] = { element: img, loaded: true };
+    }
+}
+
+function initCarousels() {
     const isMobile = () => window.innerWidth <= 767;
     const state = new Map();
     
@@ -57,6 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.querySelectorAll('.carousel-track').forEach((track, index) => {
         const id = track.dataset.carousel || (index + 1);
+
+        const images = resolveCarouselImages(id);
+        if (images.length) {
+            preloadImages(id, images);
+        }
         
         if (state.has(track)) return;
         
@@ -70,14 +93,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     function initDesktopCarousel(track, id) {
-        const images = carouselImages[id];
+        const images = resolveCarouselImages(id);
         
         if (track.children.length === 0) {
             track.innerHTML = '';
             
             for (let copy = 0; copy < 3; copy++) {
-                images.forEach((src, index) => {
-                    track.appendChild(createImageElement(src, id, index + 1, false));
+                images.forEach((image, index) => {
+                    track.appendChild(createImageElement(image, id, index + 1, false));
                 });
             }
         }
@@ -149,14 +172,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function initMobileCarousel(track, id) {
-        const images = carouselImages[id];
+        const images = resolveCarouselImages(id);
         
         if (track.children.length === 0) {
             track.innerHTML = '';
             
             for (let copy = 0; copy < 3; copy++) {
-                images.forEach((src, index) => {
-                    track.appendChild(createImageElement(src, id, index + 1, true));
+                images.forEach((image, index) => {
+                    track.appendChild(createImageElement(image, id, index + 1, true));
                 });
             }
         }
@@ -200,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
     
-    function createImageElement(src, id, index, isForMobile) {
+    function createImageElement(image, id, index, isForMobile) {
         const div = document.createElement('div');
         div.className = 'carousel-image';
         
@@ -219,12 +242,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (imageCache[id] && imageCache[id][index - 1]) {
             const cached = imageCache[id][index - 1];
-            img.src = cached.element?.src || src;
+            img.src = cached.element?.src || image.src;
         } else {
-            img.src = src;
+            img.src = image.src;
         }
         
-        img.alt = `Project ${index}`;
+        img.alt = image.alt || `Изображение ${index}`;
         img.loading = 'eager';
         img.decoding = 'async';
         
@@ -332,4 +355,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+}
+
+let carouselsInitialized = false;
+
+function startCarousels() {
+    if (carouselsInitialized) return;
+    carouselsInitialized = true;
+    initCarousels();
+}
+
+document.addEventListener('content:loaded', () => {
+    carouselsInitialized = false;
+    startCarousels();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    startCarousels();
 });

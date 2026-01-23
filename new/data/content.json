@@ -1,0 +1,527 @@
+{
+  "site": {
+    "title": "Благоустройство участков под ключ в Москве и МО | Ландшафтный дизайн | ООО \"Четыре гнома\"",
+    "description": "Профессиональное благоустройство участков под ключ в Москве и Московской области. Ландшафтный дизайн, озеленение, мощение, автополив.",
+    "keywords": "благоустройство участка, ландшафтный дизайн, озеленение, мощение дорожек, автополив, Москва, Московская область, под ключ, цена",
+    "canonical": "https://gnomgarden.ru/",
+    "yandexVerification": "951a29f84ec9a571",
+    "heroTitleLines": [
+      "Современный дизайн",
+      "для живой природы"
+    ],
+    "nav": [
+      {
+        "label": "Проекты",
+        "href": "#projects"
+      },
+      {
+        "label": "Услуги",
+        "href": "#services"
+      },
+      {
+        "label": "Прайсинг",
+        "href": "#price"
+      },
+      {
+        "label": "Контакты",
+        "href": "#contacts"
+      }
+    ],
+    "sections": {
+      "projectsTitle": "Наши проекты",
+      "servicesTitle": "Что мы делаем",
+      "pricingTitle": "Прайс",
+      "contactsTitle": "Свяжитесь с нами"
+    },
+    "footerText": "ИНН 501502042458 | ОГРНИП 3232000000333671 © 2025 ООО «Четыре гнома». Все права защищены."
+  },
+  "projects": [
+    {
+      "id": 1,
+      "title": "Тихий сад",
+      "description": "Уютный природный сад с элементами минимализма, где огонь, вода и зелень создают сбалансированное пространство для отдыха и вдохновения.",
+      "smallImage": "assets/images/projects/small/project1.webp",
+      "featuredImages": [
+        "assets/images/projects/large/project1-1.webp",
+        "assets/images/projects/large/project1-2.webp"
+      ],
+      "sort": 1
+    },
+    {
+      "id": 2,
+      "title": "Сосновый ритм",
+      "description": "Современный ландшафтный проект, в котором строгая геометрия архитектуры мягко сочетается с природными формами.",
+      "smallImage": "assets/images/projects/small/project2.webp",
+      "featuredImages": [
+        "assets/images/projects/large/project2-1.webp",
+        "assets/images/projects/large/project2-2.webp"
+      ],
+      "sort": 2
+    },
+    {
+      "id": 3,
+      "title": "Сад архитектуры",
+      "description": "Проект, где строгая геометрия форм соединяется с живыми линиями природы. Пространство, созданное для покоя, света и дыхания.",
+      "smallImage": "assets/images/projects/small/project3.webp",
+      "featuredImages": [
+        "assets/images/projects/large/project3-1.webp",
+        "assets/images/projects/large/project3-2.webp"
+      ],
+      "sort": 3
+    },
+    {
+      "id": 4,
+      "title": "Баланс пространства",
+      "description": "Ландшафтный проект, объединяющий функциональность и эстетику: просторный участок с современными зонами отдыха.",
+      "smallImage": "assets/images/projects/small/project4.webp",
+      "featuredImages": [
+        "assets/images/projects/large/project4-1.webp",
+        "assets/images/projects/large/project4-2.webp"
+      ],
+      "sort": 4
+    },
+    {
+      "id": 5,
+      "title": "Зелёная перспектива",
+      "description": "Проект, объединяющий эстетику природного рельефа и современные решения для комфортной жизни.",
+      "smallImage": "assets/images/projects/small/project5.webp",
+      "featuredImages": [
+        "assets/images/projects/large/project5-1.webp",
+        "assets/images/projects/large/project5-2.webp"
+      ],
+      "sort": 5
+    },
+    {
+      "id": 6,
+      "title": "Сад равновесия",
+      "description": "Проект благоустройства, где архитектура дома естественно сочетается с ландшафтом для комфорта и уюта.",
+      "smallImage": "assets/images/projects/small/project6.webp",
+      "featuredImages": [
+        "assets/images/projects/large/project6-1.webp",
+        "assets/images/projects/large/project6-2.webp"
+      ],
+      "sort": 6
+    },
+    {
+      "id": 7,
+      "title": "Новый проект",
+      "description": "Описание проекта",
+      "smallImage": "/uploads/1769171927265-1e7a010c-196d-4e7c-9899-4ac6d53160ad.jpg",
+      "featuredImages": [
+        "/uploads/1769171931169-fef364b4-24eb-44a9-a2c9-fb86c7e44dbd.jpg",
+        "/uploads/1769171937020-487c1a6b-cc5b-42dc-ad75-8d9dab15ba46.jpg"
+      ],
+      "sort": 7
+    }
+  ],
+  "carousels": [
+    {
+      "id": 1,
+      "title": "Наши ландшафтные проекты",
+      "images": [
+        {
+          "src": "assets/images/carousels/landscape-projects/1.webp",
+          "alt": "Изображение 1",
+          "order": 1
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/2.webp",
+          "alt": "Изображение 2",
+          "order": 2
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/3.webp",
+          "alt": "Изображение 3",
+          "order": 3
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/4.webp",
+          "alt": "Изображение 4",
+          "order": 4
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/5.webp",
+          "alt": "Изображение 5",
+          "order": 5
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/6.webp",
+          "alt": "Изображение 6",
+          "order": 6
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/7.webp",
+          "alt": "Изображение 7",
+          "order": 7
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/8.webp",
+          "alt": "Изображение 8",
+          "order": 8
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/9.webp",
+          "alt": "Изображение 9",
+          "order": 9
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/10.webp",
+          "alt": "Изображение 10",
+          "order": 10
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/11.webp",
+          "alt": "Изображение 11",
+          "order": 11
+        },
+        {
+          "src": "assets/images/carousels/landscape-projects/12.webp",
+          "alt": "Изображение 12",
+          "order": 12
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Реализация ландшафтных проектов",
+      "images": [
+        {
+          "src": "assets/images/carousels/landscape-implementation/1.webp",
+          "alt": "Изображение 1",
+          "order": 1
+        },
+        {
+          "src": "assets/images/carousels/landscape-implementation/2.webp",
+          "alt": "Изображение 2",
+          "order": 2
+        },
+        {
+          "src": "assets/images/carousels/landscape-implementation/3.webp",
+          "alt": "Изображение 3",
+          "order": 3
+        },
+        {
+          "src": "assets/images/carousels/landscape-implementation/4.webp",
+          "alt": "Изображение 4",
+          "order": 4
+        },
+        {
+          "src": "assets/images/carousels/landscape-implementation/5.webp",
+          "alt": "Изображение 5",
+          "order": 5
+        },
+        {
+          "src": "assets/images/carousels/landscape-implementation/6.webp",
+          "alt": "Изображение 6",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Наши интерьерные проекты",
+      "images": [
+        {
+          "src": "assets/images/carousels/interior-projects/1.webp",
+          "alt": "Изображение 1",
+          "order": 1
+        },
+        {
+          "src": "assets/images/carousels/interior-projects/2.webp",
+          "alt": "Изображение 2",
+          "order": 2
+        },
+        {
+          "src": "assets/images/carousels/interior-projects/3.webp",
+          "alt": "Изображение 3",
+          "order": 3
+        },
+        {
+          "src": "assets/images/carousels/interior-projects/4.webp",
+          "alt": "Изображение 4",
+          "order": 4
+        },
+        {
+          "src": "assets/images/carousels/interior-projects/5.webp",
+          "alt": "Изображение 5",
+          "order": 5
+        },
+        {
+          "src": "assets/images/carousels/interior-projects/6.webp",
+          "alt": "Изображение 6",
+          "order": 6
+        },
+        {
+          "src": "assets/images/carousels/interior-projects/7.webp",
+          "alt": "Изображение 7",
+          "order": 7
+        },
+        {
+          "src": "assets/images/carousels/interior-projects/8.webp",
+          "alt": "Изображение 8",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Реализация интерьерных проектов",
+      "images": [
+        {
+          "src": "assets/images/carousels/interior-implementation/1.webp",
+          "alt": "Изображение 1",
+          "order": 1
+        },
+        {
+          "src": "assets/images/carousels/interior-implementation/2.webp",
+          "alt": "Изображение 2",
+          "order": 2
+        },
+        {
+          "src": "assets/images/carousels/interior-implementation/3.webp",
+          "alt": "Изображение 3",
+          "order": 3
+        },
+        {
+          "src": "assets/images/carousels/interior-implementation/4.webp",
+          "alt": "Изображение 4",
+          "order": 4
+        },
+        {
+          "src": "assets/images/carousels/interior-implementation/5.webp",
+          "alt": "Изображение 5",
+          "order": 5
+        },
+        {
+          "src": "assets/images/carousels/interior-implementation/6.webp",
+          "alt": "Изображение 6",
+          "order": 6
+        },
+        {
+          "src": "assets/images/carousels/interior-implementation/7.webp",
+          "alt": "Изображение 7",
+          "order": 7
+        },
+        {
+          "src": "assets/images/carousels/interior-implementation/8.webp",
+          "alt": "Изображение 8",
+          "order": 8
+        }
+      ]
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "title": "Дизайн интерьера",
+      "description": "Планировка, подбор материалов, цветов и мебели — создание гармоничного и функционального пространства",
+      "image": "assets/images/services/1.webp",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "title": "Ландшафтное проектирование",
+      "description": "Разработка индивидуальных проектов садов и приусадебных участков — от концепции до 3D-визуализации.",
+      "image": "assets/images/services/2.webp",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "title": "Благоустройство территории",
+      "description": "Комплексное озеленение, укладка газона, мощение дорожек и установка декоративных элементов.",
+      "image": "assets/images/services/3.webp",
+      "order": 3
+    },
+    {
+      "id": 4,
+      "title": "Цветники и миксбордеры",
+      "description": "Подбор растений, расстановка по композиции и посадка многолетников, кустарников и декоративных трав.",
+      "image": "assets/images/services/4.webp",
+      "order": 4
+    },
+    {
+      "id": 5,
+      "title": "Альпийские горки и рокарии",
+      "description": "Создание природных композиций из камней и растений для стильного ландшафтного акцента.",
+      "image": "assets/images/services/5.webp",
+      "order": 5
+    },
+    {
+      "id": 6,
+      "title": "Автоматический полив и дренаж",
+      "description": "Проектирование и установка систем автополива, капельного орошения и водоотвода.",
+      "image": "assets/images/services/6.webp",
+      "order": 6
+    },
+    {
+      "id": 7,
+      "title": "Устройство водоёмов",
+      "description": "Создаём декоративные пруды, ручьи и фонтанные композиции, которые наполняют сад живой энергией.",
+      "image": "assets/images/services/7.webp",
+      "order": 7
+    },
+    {
+      "id": 8,
+      "title": "Сезонный уход за садом",
+      "description": "Обрезка, удобрение, пересадка и защита растений — регулярное обслуживание вашего участка.",
+      "image": "assets/images/services/8.webp",
+      "order": 8
+    }
+  ],
+  "pricing": {
+    "note": "Позвоните нам для индивидуального предложения",
+    "landscape": {
+      "title": "Прайс на ландшафтные работы",
+      "mobileTitle": "Ландшафтные работы",
+      "rows": [
+        {
+          "id": "land-1",
+          "name": "Этап ПФзУ",
+          "price": 710,
+          "currency": "RUB",
+          "unit": "сотка",
+          "order": 1
+        },
+        {
+          "id": "land-2",
+          "name": "Этап Визуализация",
+          "price": 1750,
+          "currency": "RUB",
+          "unit": "сотка",
+          "order": 2
+        },
+        {
+          "id": "land-3",
+          "name": "Генплан с балансом территории",
+          "price": 350,
+          "currency": "RUB",
+          "unit": "сотка",
+          "order": 3
+        },
+        {
+          "id": "land-4",
+          "name": "Ведомость покрытий (план мощения)",
+          "price": 300,
+          "currency": "RUB",
+          "unit": "сотка",
+          "order": 4
+        },
+        {
+          "id": "land-5",
+          "name": "Дендрологический план",
+          "price": 315,
+          "currency": "RUB",
+          "unit": "сотка",
+          "order": 5
+        },
+        {
+          "id": "land-6",
+          "name": "Ассортиментная ведомость",
+          "price": 260,
+          "currency": "RUB",
+          "unit": "сотка",
+          "order": 6
+        },
+        {
+          "id": "land-7",
+          "name": "Концептуальный эскиз",
+          "price": 2250,
+          "currency": "RUB",
+          "unit": "сотка",
+          "order": 7
+        }
+      ]
+    },
+    "interior": {
+      "title": "Прайс на интерьер",
+      "mobileTitle": "Интерьер",
+      "rows": [
+        {
+          "id": "int-1",
+          "name": "Ситуационный план",
+          "price": 190,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 1
+        },
+        {
+          "id": "int-2",
+          "name": "План демонтажа",
+          "price": 210,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 2
+        },
+        {
+          "id": "int-3",
+          "name": "План возводимых перегородок",
+          "price": 230,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 3
+        },
+        {
+          "id": "int-4",
+          "name": "План расстановки мебели и оборудования",
+          "price": 180,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 4
+        },
+        {
+          "id": "int-5",
+          "name": "Узлы, эскизы, разрезы",
+          "price": 240,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 5
+        },
+        {
+          "id": "int-6",
+          "name": "План потолка с привязкой светильников",
+          "price": 750,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 6
+        },
+        {
+          "id": "int-7",
+          "name": "План розеточной сети",
+          "price": 750,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 7
+        },
+        {
+          "id": "int-8",
+          "name": "План укладки напольного покрытия",
+          "price": 190,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 8
+        },
+        {
+          "id": "int-9",
+          "name": "План отделки",
+          "price": 220,
+          "currency": "RUB",
+          "unit": "м²",
+          "order": 9
+        }
+      ]
+    }
+  },
+  "contacts": {
+    "companyName": "ООО «Четыре гнома»",
+    "phone": "+79099000032",
+    "displayPhone": "8 (909) 900-02-32",
+    "email": "vasiliyduvalka04@gmail.com",
+    "address": "Московская область, п. Отрадное, ул. Клубная, 5, офис 127",
+    "mapUrl": "https://maps.google.com/?q=Московская область, п. Отрадное, ул. Клубная, 5, офис 127",
+    "telegramUrl": "https://t.me/alenabagryanova",
+    "telegramHandle": "@alenabagryanova",
+    "aboutTitle": "О компании",
+    "aboutText": "Компания ООО «Четыре гнома» специализируется на благоустройстве территорий, внутренней отделке домов и малоэтажном строительстве. Мы выполняем полный комплекс работ — от ландшафтного дизайна и посадки растений до строительства и отделки помещений. Наш приоритет — качество, надежность и индивидуальный подход к каждому клиенту. Мы помогаем создавать комфортное и красивое пространство для жизни и отдыха.",
+    "logoImage": "assets/images/logo.png"
+  }
+}
